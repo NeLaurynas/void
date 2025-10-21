@@ -1,10 +1,9 @@
 const rand = (a, b) => Math.floor(Math.random() * (b - a + 1)) + a;
 
 const homeLink = document.querySelector('#homeLink');
+homeLink.setAttribute('data-text', homeLink.textContent.trim());
 
 const glitchOnce = () => {
-	if (!homeLink) return;
-	homeLink.setAttribute('data-text', homeLink.textContent.trim());
 	let n = rand(5, 9), on = false;
 
 	const tick = () => {
