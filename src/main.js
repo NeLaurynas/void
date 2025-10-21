@@ -1,4 +1,3 @@
-// Entry point executed when opening the website
 import {route} from './router.js';
 import {glitchLoop} from "./glitch.js";
 import {applyTheme} from "./theme.js";

@@ -14,6 +14,7 @@ const hide = (el) => {
 };
 
 export function openPost(id, push, sourceLink) {
+	// here try loading data...
 	const target = document.querySelector(`article.post-detail[data-post="${id}"]`);
 	if (!target) return;
 	if (push) history.pushState({}, '', `/${id}`);
