@@ -57,16 +57,25 @@ body {
 	position: relative;
 	display: inline-block;
 }
-.theme-controls { gap: 8px; justify-self: end; }
+.theme-controls { gap: 8px; justify-self: end; align-items: center; }
 .theme-btn {
 	appearance: none;
 	border: 1px solid var(--border);
 	background: var(--card);
 	color: var(--text);
 	border-radius: 8px;
-	padding: 6px 10px;
+	/* Make light/dark buttons uniform size */
+	width: 36px;
+	height: 36px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0;
+	font-size: 18px;
+	line-height: 1;
 	cursor: pointer;
 }
+.theme-btn .icon { display: block; line-height: 1; }
 .theme-btn[aria-pressed="true"] {
 	outline: 2px solid var(--ring);
 }
