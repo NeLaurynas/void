@@ -1,0 +1,188 @@
+/* Theme tokens */
+:root {
+	--bg: #f6f7f9;           /* soft light bg */
+	--text: #101214;         /* near-black text */
+	--muted: #646b75;        /* muted text */
+	--card: #ffffff;         /* light card */
+	--border: #e5e7eb;       /* subtle border */
+	--accent: #1f6feb;       /* gentle blue */
+	--ring: #d2d7df;
+}
+
+html[data-theme="dark"] {
+	--bg: #0d0f13;           /* near-black bg */
+	--text: #e8edf3;         /* near-white text */
+	--muted: #a7afba;        /* muted on dark */
+	--card: #121418;         /* dark card */
+	--border: #21262d;       /* subtle dark border */
+	--accent: #86b6ff;       /* gentle blue */
+	--ring: #2a313a;
+}
+
+/* Resets */
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+	margin: 0;
+	background: var(--bg);
+	color: var(--text);
+	font: 16px/1.6 ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+	text-rendering: optimizeLegibility;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+/* Header */
+.site-header {
+	position: sticky;
+	top: 0;
+	z-index: 10;
+	background: var(--bg);
+	border-bottom: 1px solid var(--border);
+	display: grid;
+	grid-template-columns: 1fr auto 1fr;
+	align-items: center;
+	gap: 8px;
+	padding: 16px 20px;
+}
+.brand, .theme-controls { display: flex; }
+.brand { justify-content: center; }
+.brand-link {
+	color: var(--text);
+	text-decoration: none;
+	font-weight: 900;
+	letter-spacing: 0.8px;
+	font-size: clamp(2rem, 9vw, 4.25rem);
+	line-height: 1;
+	position: relative;
+	display: inline-block;
+}
+.theme-controls { gap: 8px; justify-self: end; }
+.theme-btn {
+	appearance: none;
+	border: 1px solid var(--border);
+	background: var(--card);
+	color: var(--text);
+	border-radius: 8px;
+	padding: 6px 10px;
+	cursor: pointer;
+}
+.theme-btn[aria-pressed="true"] {
+	outline: 2px solid var(--ring);
+}
+
+/* Layout */
+.app { max-width: 820px; margin: 0 auto; padding: 28px 20px 72px; }
+
+/* List heading */
+.list-title {
+	text-align: center;
+	font-weight: 300;
+	letter-spacing: 0.3px;
+	font-size: clamp(1.6rem, 4vw, 2.1rem);
+	margin: 24px 0 10px;
+	color: var(--text);
+}
+
+/* Post list */
+.list-view {
+	/* Remove table-like frame; keep only horizontal separators */
+	background: transparent;
+	border: 0;
+	border-radius: 0;
+	overflow: visible;
+}
+.post-card { border-top: 1px solid var(--border); }
+.post-card:first-of-type { border-top: none; }
+.post-link, .post-detail { display: grid; grid-template-columns: 1fr max-content; align-items: baseline; }
+.post-link { gap: 4px 20px; text-decoration: none; color: inherit; padding: 18px 22px; }
+.post-link:hover .post-title { text-decoration: underline; }
+.post-title {
+	/* Larger, bold, uppercase titles like the reference */
+	font-size: clamp(1.1rem, 2.2vw, 1.75rem);
+	text-transform: uppercase;
+	letter-spacing: 0.4px;
+	font-weight: 900;
+	margin: 0 0 2px;
+	grid-column: 1;
+	grid-row: 1;
+}
+.post-sub { margin: 0; grid-column: 1 / -1; }
+.post-date {
+	font-size: 0.92rem;
+	margin-left: 16px;
+	justify-self: end;
+	text-align: right;
+	/* Pin date to the right of the title (same row) */
+	grid-column: 2;
+	grid-row: 1;
+}
+
+/* Shared muted text + numeric alignment */
+.post-date, .post-sub, .post-meta { color: var(--muted); }
+.post-date, .post-meta time { font-variant-numeric: tabular-nums; }
+
+/* Detail view */
+.detail-view { padding-top: 8px; }
+.post-detail { padding: 4px; row-gap: 6px; }
+/* Ensure hidden detail posts truly disappear even though .post-detail sets display */
+.post-detail[hidden] { display: none !important; }
+.post-detail .post-title {
+	font-size: 2.25rem;
+	letter-spacing: 0.2px;
+	grid-column: 1 / -1;
+}
+.post-detail .post-sub { grid-column: 1; }
+.post-meta { grid-column: 2; text-align: right; }
+.post-detail .content { grid-column: 1 / -1; margin-top: 12px; }
+.content p { margin: 12px 0; }
+
+/* View Transitions: we’ll assign this class dynamically to the title
+   in list and detail so they morph between states. */
+.vt-title { view-transition-name: post-title; }
+
+/* Reduce motion preferences */
+@media (prefers-reduced-motion: reduce) {
+	.vt-title { view-transition-name: none; }
+	.brand-link.glitch,
+	.brand-link.glitch::before,
+	.brand-link.glitch::after { animation: none !important; opacity: 1; transform: none; }
+}
+
+/* Selection */
+::selection { background: var(--text); color: var(--bg); }
+
+/* Brand glitch effect (subtle, occasional) */
+.brand-link.glitch::before,
+.brand-link.glitch::after {
+	content: attr(data-text);
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+	/* Keep base text color intact; draw only colored shadows */
+	color: transparent;
+	-webkit-text-fill-color: transparent;
+	mix-blend-mode: normal;
+}
+.brand-link.glitch::before {
+	text-shadow: 1px 0 0 var(--text);
+	opacity: 0.6;
+	animation: glitch-outline 120ms steps(2, end) 1;
+}
+.brand-link.glitch::after {
+	text-shadow: -1px 0 0 var(--text);
+	opacity: 0.6;
+	animation: glitch-outline 120ms steps(2, end) 1 reverse;
+}
+.brand-link.glitch { animation: glitch-tilt 120ms ease-out 1; }
+
+@keyframes glitch-outline {
+	0%   { transform: translate(0, 0); }
+	50%  { transform: translate(0.8px, -0.4px); }
+	100% { transform: translate(-0.8px, 0.4px); }
+}
+@keyframes glitch-tilt {
+	0%   { transform: rotate(0deg); }
+	50%  { transform: rotate(0.8deg); }
+	100% { transform: rotate(0deg); }
+}

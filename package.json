@@ -1,0 +1,17 @@
+{
+  "name": "void-blog",
+  "version": "1.0.0",
+  "private": true,
+  "license": "AGPL-3.0-only",
+  "type": "module",
+  "scripts": {
+    "build:js": "esbuild src/main.js --bundle --minify --outfile=dist/bundle.js",
+    "build:css": "esbuild src/blog.css --minify --outfile=dist/blog.css",
+    "build:html": "node scripts/copy-html.js",
+    "build": "npm run build:js && npm run build:css && npm run build:html",
+    "dev": "node scripts/dev.js"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.11"
+  }
+}
