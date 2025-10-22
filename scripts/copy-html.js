@@ -15,12 +15,12 @@ function escapeHtml(s) {
 
 function renderList(posts) {
     return posts.map(p => `		<article class="post-card">
-			<a href="/${escapeHtml(p.slug)}" class="post-link" data-post="${escapeHtml(p.slug)}">
-				<h2 class="post-title">${escapeHtml(p.header || '')}</h2>
-				<p class="post-sub">${escapeHtml(p.subheader || '')}</p>
-				<time class="post-date">${escapeHtml(p.date || '')}</time>
-			</a>
-		</article>`).join('\n');
+				<a href="/${escapeHtml(p.year || '')}/${escapeHtml(p.slug)}" class="post-link" data-post="${escapeHtml(p.slug)}">
+					<h2 class="post-title">${escapeHtml(p.header || '')}</h2>
+					<p class="post-sub">${escapeHtml(p.subheader || '')}</p>
+					<time class="post-date">${escapeHtml(p.date || '')}</time>
+				</a>
+			</article>`).join('\n');
 }
 
 async function main() {

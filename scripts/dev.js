@@ -33,7 +33,7 @@ async function copyHtmlDev() {
     let html = await readFile(srcPath, 'utf8');
     // Replace list-view with posts
     function escapeHtml(s){return String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#39;');}
-    function renderList(posts){return posts.map(p=>`\t\t<article class="post-card">\n\t\t\t<a href="/${escapeHtml(p.slug)}" class="post-link" data-post="${escapeHtml(p.slug)}">\n\t\t\t\t<h2 class="post-title">${escapeHtml(p.header||'')}</h2>\n\t\t\t\t<p class="post-sub">${escapeHtml(p.subheader||'')}</p>\n\t\t\t\t<time class="post-date">${escapeHtml(p.date||'')}</time>\n\t\t\t</a>\n\t\t</article>`).join('\n');}
+    function renderList(posts){return posts.map(p=>`\t\t<article class="post-card">\n\t\t\t<a href="/${escapeHtml(p.year||'')}/${escapeHtml(p.slug)}" class="post-link" data-post="${escapeHtml(p.slug)}">\n\t\t\t\t<h2 class="post-title">${escapeHtml(p.header||'')}</h2>\n\t\t\t\t<p class="post-sub">${escapeHtml(p.subheader||'')}</p>\n\t\t\t\t<time class="post-date">${escapeHtml(p.date||'')}</time>\n\t\t\t</a>\n\t\t</article>`).join('\n');}
     try {
         const posts = JSON.parse(await readFile(path.join(distDir, 'posts.json'), 'utf8')).posts || [];
         const listHtml = renderList(posts);

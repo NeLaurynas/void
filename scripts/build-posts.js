@@ -172,7 +172,7 @@ async function main() {
         date: meta.date || '',
         tags: Array.isArray(meta.tags) ? meta.tags : [],
         year,
-        path: `/${slug}`,
+        path: `/${year}/${slug}`,
         source: path.relative(root, filePath),
       };
       posts.push(post);

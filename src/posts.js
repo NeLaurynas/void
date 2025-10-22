@@ -51,7 +51,17 @@ export function openPost(id, push, sourceLink, meta) {
 	let target = document.querySelector(`article.post-detail[data-post="${id}"]`) || null;
 	if (!target) target = ensureDetailArticle(id, meta);
 
-	if (push) history.pushState({}, '', `/${id}`);
+	if (push) {
+		// Prefer canonical /year/slug when we can infer the year
+		let year = (meta && meta.date ? meta.date.slice(0, 4) : '') || '';
+		if (!year) {
+			const fallbackFromList = document.querySelector(`.post-link[data-post="${id}"]`);
+			const date = fallbackFromList ? (fallbackFromList.querySelector('.post-date')?.textContent || '') : '';
+			if (date) year = date.slice(0, 4);
+		}
+		const newPath = year ? `/${year}/${encodeURIComponent(id)}` : `/${encodeURIComponent(id)}`;
+		history.pushState({}, '', newPath);
+	}
 
 	withVT(() => {
 		hide(listView);
