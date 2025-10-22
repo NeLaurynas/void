@@ -90,18 +90,35 @@ export function preloadPost(id, meta) {
 	if (content.hasAttribute('data-loading')) return;
 	content.setAttribute('data-loading', 'true');
 
-	// Compute URL; if date missing, try inferring from meta or skip
-	const year = (meta && meta.date ? meta.date.slice(0, 4) : '') || '';
-	if (!year) {
-		content.removeAttribute('data-loading');
-		return;
-	}
+    // Compute URL; if date missing, attempt to derive from list DOM
+    let year = (meta && meta.date ? meta.date.slice(0, 4) : '') || '';
+    if (!year) {
+        const fallbackFromList = document.querySelector(`.post-link[data-post="${id}"]`);
+        const date = fallbackFromList ? (fallbackFromList.querySelector('.post-date')?.textContent || '') : '';
+        if (date) year = date.slice(0,4);
+    }
+    if (!year) {
+        content.removeAttribute('data-loading');
+        return;
+    }
 	const url = `/${year}/${id}.html`;
 	fetch(url)
-		.then((r) => r.text())
+		.then((r) => {
+			if (!r.ok) throw new Error(`Failed to load post ${id}`);
+			return r.text();
+		})
 		.then((html) => {
 			localStorage.setItem(id, html);
 			content.innerHTML = html;
+		})
+		.catch(() => {
+			// If this was a direct navigation to an unknown/failed slug, go home
+			const raw = (location.pathname || '').slice(1);
+			let current = raw; try { current = decodeURIComponent(raw); } catch {}
+			if (current === id) {
+				try { history.replaceState({}, '', '/'); } catch {}
+				closePost(false);
+			}
 		})
 		.finally(() => {
 			content.removeAttribute('data-loading');
@@ -133,4 +150,3 @@ export function closePost(push) {
 		}
 	);
 };
-
