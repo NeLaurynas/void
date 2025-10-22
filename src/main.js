@@ -5,6 +5,7 @@ import {route} from './router.js';
 import {glitchLoop} from "./glitch.js";
 import {applyTheme} from "./theme.js";
 import {closePost, openPost, preloadPost} from "./posts.js";
+import {getMetaFromLink} from "./postMeta.js";
 
 const homeLink = document.querySelector('#homeLink');
 const listView = document.querySelector('#list-view');
@@ -63,11 +64,7 @@ function init() {
 
     // Preload on hover/focus for instant open
     const findPostAnchor = (target) => target.closest('a.post-link');
-    const extractMeta = (anchor) => ({
-        header: anchor.querySelector('.post-title').textContent,
-        subheader: anchor.querySelector('.post-sub').textContent,
-        date: anchor.querySelector('.post-date').textContent,
-    });
+    const extractMeta = (anchor) => getMetaFromLink(anchor);
 
     const maybePreload = (e) => {
         const anchor = findPostAnchor(e.target);

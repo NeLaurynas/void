@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 
 import {closePost, openPost, preloadPost} from "./posts.js";
+import {getMetaFromLink} from "./postMeta.js";
 
 window.addEventListener('popstate', route);
 
@@ -33,8 +34,8 @@ export function route() {
 
 	// If a year is present in the URL, it must match the post's actual year
 	if (year) {
-		const actualDate = link.querySelector('.post-date').textContent;
-		const actualYear = actualDate.slice(0, 4);
+		const meta = getMetaFromLink(link);
+		const actualYear = meta.date.slice(0, 4);
 		if (actualYear !== year) {
 			closePost(false);
 			if (location.pathname !== '/') history.replaceState({}, '', '/');
@@ -51,9 +52,7 @@ export function route() {
 		}
 	}
 
-	const header = link.querySelector('.post-title').textContent;
-	const subheader = link.querySelector('.post-sub').textContent;
-	const date = link.querySelector('.post-date').textContent;
-	preloadPost(id, { header, subheader, date });
-	openPost(id, false, link, { header, subheader, date });
+	const meta = getMetaFromLink(link);
+	preloadPost(id, meta);
+	openPost(id, false, link, meta);
 };

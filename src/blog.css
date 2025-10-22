@@ -157,6 +157,10 @@ body {
 .post-meta { grid-column: 2; text-align: right; margin: 0; }
 .post-detail .content { grid-column: 1 / -1; margin-top: 12px; text-align: justify; }
 .post-detail .content p { margin: 12px 0; text-indent: 1.5em; }
+/* If the content has only a single paragraph, do not indent it */
+.post-detail .content p:only-child { text-indent: 0; }
+/* If JS marks a paragraph as single-line, do not indent it */
+.post-detail .content p.no-indent { text-indent: 0; }
 
 /* Links only inside post content */
 .post-detail .content a {

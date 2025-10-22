@@ -2,22 +2,14 @@
 // SPDX-License-Identifier: BSD-3-Clause
 
 import {withVT} from "./viewTransition.js";
+import {prettifyMarkdown, isPrettified} from "./prettifyMarkdown.js";
+import {deriveYear} from "./postMeta.js";
 
 const detailView = document.querySelector('#detail-view');
 const listView = document.querySelector('#list-view');
 const listHeading = document.querySelector('.list-title');
 
 // Cache in browser localStorage (id -> HTML)
-
-function deriveYear(id, meta) {
-    let year = (meta && meta.date ? meta.date.slice(0, 4) : '') || '';
-    if (!year) {
-        const fallbackFromList = document.querySelector(`.post-link[data-post="${id}"]`);
-        const date = fallbackFromList ? (fallbackFromList.querySelector('.post-date')?.textContent || '') : '';
-        if (date) year = date.slice(0, 4);
-    }
-    return year;
-}
 
 function ensureDetailArticle(id, meta) {
 	let target = document.querySelector(`article.post-detail[data-post="${id}"]`);
@@ -50,9 +42,13 @@ const show = (el) => {
 	el.setAttribute('aria-hidden', 'false');
 };
 const hide = (el) => {
-	el.hidden = true;
-	el.setAttribute('aria-hidden', 'true');
+    el.hidden = true;
+    el.setAttribute('aria-hidden', 'true');
 };
+
+function clearVTTitles() {
+    document.querySelectorAll('.vt-title').forEach((el) => el.classList.remove('vt-title'));
+}
 
 export function openPost(id, push, sourceLink, meta) {
 	// Find preloaded article; if missing, create as fallback to avoid empty detail
@@ -67,22 +63,28 @@ export function openPost(id, push, sourceLink, meta) {
     }
 
 	withVT(() => {
-		hide(listView);
-		hide(listHeading);
-		show(detailView);
-		detailView.querySelectorAll('article.post-detail').forEach((el) => {
-			el.hidden = el !== target;
-		});
+        hide(listView);
+        hide(listHeading);
+        show(detailView);
+        detailView.querySelectorAll('article.post-detail').forEach((el) => {
+            el.hidden = el !== target;
+        });
 
-		const newTitle = target.querySelector('.post-title');
-		newTitle.classList.add('vt-title');
-	}, {
-		before: () => {
-			const sourceTitle = sourceLink.querySelector('.post-title');
-			document.querySelectorAll('.vt-title').forEach((el) => el.classList.remove('vt-title'));
-			sourceTitle.classList.add('vt-title');
-		}, after: () => document.querySelectorAll('.vt-title').forEach((el) => el.classList.remove('vt-title')),
-	});
+        const newTitle = target.querySelector('.post-title');
+        newTitle.classList.add('vt-title');
+        // After making article visible, apply prettifying once and update cache
+        const content = target.querySelector('.content');
+        if (!isPrettified(target)) {
+            prettifyMarkdown(target);
+            try { localStorage.setItem(id, content.innerHTML); } catch {}
+        }
+    }, {
+        before: () => {
+            const sourceTitle = sourceLink.querySelector('.post-title');
+            clearVTTitles();
+            sourceTitle.classList.add('vt-title');
+        }, after: () => clearVTTitles(),
+    });
 }
 
 export function preloadPost(id, meta) {
@@ -115,10 +117,16 @@ export function preloadPost(id, meta) {
 			if (!r.ok) throw new Error(`Failed to load post ${id}`);
 			return r.text();
 		})
-		.then((html) => {
-			localStorage.setItem(id, html);
-			content.innerHTML = html;
-		})
+        .then((html) => {
+            localStorage.setItem(id, html);
+            content.innerHTML = html;
+            // If article is visible, prettify and update cache to fixed version
+            const article = content.closest('article.post-detail');
+            if (article && !article.hidden && !isPrettified(article)) {
+                prettifyMarkdown(article);
+                try { localStorage.setItem(id, content.innerHTML); } catch {}
+            }
+        })
 		.catch(() => {
 			// If this was a direct navigation to an unknown/failed slug, go home
 			const raw = (location.pathname || '').slice(1);
@@ -149,12 +157,12 @@ export function closePost(push) {
 			hide(detailView);
 			listTitleEl && listTitleEl.classList.add('vt-title');
 		},
-		{
-			before: () => {
-				document.querySelectorAll('.vt-title').forEach((el) => el.classList.remove('vt-title'));
-				detailTitle && detailTitle.classList.add('vt-title');
-			},
-			after: () => document.querySelectorAll('.vt-title').forEach((el) => el.classList.remove('vt-title')),
-		}
+        {
+            before: () => {
+                clearVTTitles();
+                detailTitle && detailTitle.classList.add('vt-title');
+            },
+            after: () => clearVTTitles(),
+        }
 	);
 };
