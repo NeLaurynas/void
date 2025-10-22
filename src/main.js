@@ -19,18 +19,18 @@ function init() {
 		closePost(true);
 	});
 
-    listView.addEventListener('click', (e) => {
-        const path = e.composedPath ? e.composedPath() : [];
-        const anchor = (path.find((n) => n && n.matches && n.matches('a.post-link')) || (e.target && e.target.closest && e.target.closest('a.post-link'))) || null;
-        if (!anchor || !listView.contains(anchor)) return;
-        e.preventDefault();
-        e.stopPropagation();
-        const id = anchor.getAttribute('data-post');
-        const header = (anchor.querySelector('.post-title') || {}).textContent || '';
-        const subheader = (anchor.querySelector('.post-sub') || {}).textContent || '';
-        const date = (anchor.querySelector('.post-date') || {}).textContent || '';
-        openPost(id, true, anchor, { header, subheader, date });
-    }, false);
+	listView.addEventListener('click', (e) => {
+		const path = e.composedPath ? e.composedPath() : [];
+		const anchor = (path.find((n) => n && n.matches && n.matches('a.post-link')) || (e.target && e.target.closest && e.target.closest('a.post-link'))) || null;
+		if (!anchor || !listView.contains(anchor)) return;
+		e.preventDefault();
+		e.stopPropagation();
+		const id = anchor.getAttribute('data-post');
+		const header = anchor.querySelector('.post-title').textContent;
+		const subheader = anchor.querySelector('.post-sub').textContent;
+		const date = anchor.querySelector('.post-date').textContent;
+		openPost(id, true, anchor, { header, subheader, date });
+	}, false);
 }
 
 init();
