@@ -93,7 +93,7 @@ function startServer() {
 
 			let reqPath = decodeURIComponent((req.url.split('?')[0] || '/'));
 			const ext = path.extname(reqPath).toLowerCase();
-			const isStatic = ext === '.css' || ext === '.js' || ext === '.avif';
+			const isStatic = ext === '.css' || ext === '.js' || ext === '.avif' || ext === '.html';
 
 			if (isStatic) {
 				const rel = reqPath.startsWith('/') ? reqPath.slice(1) : reqPath;
