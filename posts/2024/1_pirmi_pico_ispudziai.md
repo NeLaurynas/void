@@ -1,7 +1,7 @@
 slug:pico-pirmi-įspūdžiai
 header:Pico - pirmi įspūdžiai
 subheader:kaip viskas prasidėjo
-date:2024-12-13
+date:2024-12-07
 tags:Pico
 
 # Pradžia

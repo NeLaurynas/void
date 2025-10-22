@@ -25,9 +25,10 @@
 
 <main id="app" class="app">
 	<h1 class="list-title">Naujausi įrašai</h1>
+
 	<section id="list-view" class="list-view">
 		<article class="post-card">
-			<a href="/šatomic-stylesą" class="post-link" data-post="šatomic-stylesą">
+			<a href="/post-one" class="post-link" data-post="post-one">
 				<h2 class="post-title">Serving atomic styles well</h2>
 				<p class="post-sub">Strategies for shipping atomic CSS for websites large and small</p>
 				<time class="post-date">2025-09-16</time>
@@ -35,227 +36,40 @@
 		</article>
 
 		<article class="post-card">
-			<a href="/tailwind-css-in-js" class="post-link" data-post="tailwind-css-in-js">
+			<a href="/second-post" class="post-link" data-post="second-post">
 				<h2 class="post-title">Either, Tailwind is CSS‑in‑JS…</h2>
 				<p class="post-sub">…or, StyleX isn’t</p>
 				<time class="post-date">2025-09-14</time>
 			</a>
 		</article>
 
-		<article class="post-card">
-			<a href="/enum-syntax-ts" class="post-link" data-post="enum-syntax-ts">
-				<h2 class="post-title">New enum syntax for TypeScript</h2>
-				<p class="post-sub">A proposal for new enum syntax for TypeScript</p>
-				<time class="post-date">2025-03-09</time>
-			</a>
-		</article>
-
-		<article class="post-card">
-			<a href="/apple-marketshare" class="post-link" data-post="apple-marketshare">
-				<h2 class="post-title">Is Apple avoiding marketshare?</h2>
-				<p class="post-sub">Is Apple intentionally avoiding a dominant marketshare?</p>
-				<time class="post-date">2025-03-06</time>
-			</a>
-		</article>
-
-		<article class="post-card">
-			<a href="/safari-wishlist-2025" class="post-link" data-post="safari-wishlist-2025">
-				<h2 class="post-title">The wishlist for Safari in 2025</h2>
-				<p class="post-sub">What Safari still needs</p>
-				<time class="post-date">2025-01-07</time>
-			</a>
-		</article>
-
-		<article class="post-card">
-			<a href="/tailwind-4-thoughts" class="post-link" data-post="tailwind-4-thoughts">
-				<h2 class="post-title">Thoughts on Tailwind 4</h2>
-				<p class="post-sub">Some thoughts on the latest Tailwind release</p>
-				<time class="post-date">2024-11-30</time>
-			</a>
-		</article>
-
-		<article class="post-card">
-			<a href="/no-best-framework" class="post-link" data-post="no-best-framework">
-				<h2 class="post-title">There is no best framework</h2>
-				<p class="post-sub">Remember: there is no best framework</p>
-				<time class="post-date">2024-11-11</time>
-			</a>
-		</article>
-
-		<article class="post-card">
-			<a href="/hello-there" class="post-link" data-post="hello-there">
-				<h2 class="post-title">Hello there!</h2>
-				<p class="post-sub">Welcome to my new website!</p>
-				<time class="post-date">2024-11-10</time>
-			</a>
-		</article>
-
-		<article class="post-card">
-			<a href="/hello" class="post-link" data-post="hello">
-				<h2 class="post-title">Hello, world</h2>
-				<p class="post-sub">A tiny, readable starter blog</p>
-				<time class="post-date">2025-01-01</time>
-			</a>
-		</article>
-
-		<article class="post-card">
-			<a href="/simple" class="post-link" data-post="simple">
-				<h2 class="post-title">Simplicity > everything</h2>
-				<p class="post-sub">Less chrome, more content</p>
-				<time class="post-date">2025-02-14</time>
-			</a>
-		</article>
 	</section>
 
 	<section id="detail-view" class="detail-view" hidden>
-		<article id="post-šatomic-stylesą" class="post-detail" data-post="šatomic-stylesą" hidden>
-			<h1 class="post-title">Serving atomic styles well</h1>
-			<p class="post-sub">Strategies for shipping atomic CSS for websites large and small</p>
+		<article id="post-post-one" class="post-detail" data-post="post-one" hidden>
+			<h1 class="post-title">Post one header</h1>
+			<p class="post-sub">Post one sub</p>
 			<p class="post-meta">
 				<time>2025-09-16</time>
 			</p>
 			<div class="content">
-				<p>
-					Atomic CSS can scale gracefully when naming and delivery are
-					deliberate. This post sketches a pragmatic approach to shipping
-					tokens and utilities without compromising ergonomics.
-				</p>
-				<p>
-					Focus areas: cacheability, predictable specificity, and DX.
-				</p>
+				<!--		here we'll load the html from server		-->
+				<p>Įrašas kraunamas...</p>
 			</div>
 		</article>
 
-		<article id="post-tailwind-css-in-js" class="post-detail" data-post="tailwind-css-in-js" hidden>
+		<article id="post-second-post" class="post-detail" data-post="second-post" hidden>
 			<h1 class="post-title">Either, Tailwind is CSS‑in‑JS…</h1>
 			<p class="post-sub">…or, StyleX isn’t</p>
 			<p class="post-meta">
 				<time>2025-09-14</time>
 			</p>
 			<div class="content">
-				<p>
-					A lighthearted look at labels. Build systems blur boundaries;
-					what matters is clarity, performance, and maintainability.
-				</p>
+				<!--		here we'll load the html from server		-->
+				<p>Įrašas kraunamas...</p>
 			</div>
 		</article>
 
-		<article id="post-enum-syntax-ts" class="post-detail" data-post="enum-syntax-ts" hidden>
-			<h1 class="post-title">New enum syntax for TypeScript</h1>
-			<p class="post-sub">A proposal for new enum syntax for TypeScript</p>
-			<p class="post-meta">
-				<time>2025-03-09</time>
-			</p>
-			<div class="content">
-				<p>
-					Exploring patterns that keep enums tree‑shakeable and ergonomic,
-					borrowing from const objects and union literals.
-				</p>
-			</div>
-		</article>
-
-		<article id="post-apple-marketshare" class="post-detail" data-post="apple-marketshare" hidden>
-			<h1 class="post-title">Is Apple avoiding marketshare?</h1>
-			<p class="post-sub">Is Apple intentionally avoiding a dominant marketshare?</p>
-			<p class="post-meta">
-				<time>2025-03-06</time>
-			</p>
-			<div class="content">
-				<p>
-					A short essay about platform incentives, privacy positioning, and
-					the shape of a sustainable ecosystem.
-				</p>
-			</div>
-		</article>
-
-		<article id="post-safari-wishlist-2025" class="post-detail" data-post="safari-wishlist-2025" hidden>
-			<h1 class="post-title">The wishlist for Safari in 2025</h1>
-			<p class="post-sub">What Safari still needs</p>
-			<p class="post-meta">
-				<time>2025-01-07</time>
-			</p>
-			<div class="content">
-				<p>
-					What would make Safari shine: steady interop, faster rollout of
-					modern CSS, and tooling hooks that unblock teams.
-				</p>
-			</div>
-		</article>
-
-		<article id="post-tailwind-4-thoughts" class="post-detail" data-post="tailwind-4-thoughts" hidden>
-			<h1 class="post-title">Thoughts on Tailwind 4</h1>
-			<p class="post-sub">Some thoughts on the latest Tailwind release</p>
-			<p class="post-meta">
-				<time>2024-11-30</time>
-			</p>
-			<div class="content">
-				<p>
-					The next iteration leans hard into design tokens. A few notes on
-					migration and taming selector weight.
-				</p>
-			</div>
-		</article>
-
-		<article id="post-no-best-framework" class="post-detail" data-post="no-best-framework" hidden>
-			<h1 class="post-title">There is no best framework</h1>
-			<p class="post-sub">Remember: there is no best framework</p>
-			<p class="post-meta">
-				<time>2024-11-11</time>
-			</p>
-			<div class="content">
-				<p>
-					Tradeoffs everywhere. Teams succeed by aligning constraints with
-					strengths, not by chasing a universal winner.
-				</p>
-			</div>
-		</article>
-
-		<article id="post-hello-there" class="post-detail" data-post="hello-there" hidden>
-			<h1 class="post-title">Hello there!</h1>
-			<p class="post-sub">Welcome to my new website!</p>
-			<p class="post-meta">
-				<time>2024-11-10</time>
-			</p>
-			<div class="content">
-				<p>Welcome to my new website. It’s clean, fast, and tiny.</p>
-			</div>
-		</article>
-
-		<article id="post-hello" class="post-detail" data-post="hello" hidden>
-			<h1 class="post-title">Hello, world</h1>
-			<p class="post-sub">A tiny, readable starter blog</p>
-			<p class="post-meta">
-				<time>2025-01-01</time>
-			</p>
-			<div class="content">
-				<p>
-					Welcome to the simplest possible blog. It is a single
-					HTML file with a sprinkle of CSS and a tiny bit of JS.
-				</p>
-				<p>
-					Click the site title to go back, or use your browser’s back button.
-					Light and dark modes live in the top right.
-				</p>
-			</div>
-		</article>
-
-		<article id="post-simple" class="post-detail" data-post="simple" hidden>
-			<h1 class="post-title">Simplicity > everything</h1>
-			<p class="post-sub">Less chrome, more content</p>
-			<p class="post-meta">
-				<time>2025-02-14</time>
-			</p>
-			<div class="content">
-				<p>
-					Clean type, calm contrast, and no distractions. The goal is
-					comfortable reading with fast transitions.
-				</p>
-				<p>
-					The opening animation uses the View Transitions API so the
-					list title morphs into the post title.
-				</p>
-			</div>
-		</article>
 	</section>
 </main>
 <script src="bundle.js" defer></script>

@@ -8,15 +8,8 @@ import implicitFigures from 'markdown-it-implicit-figures';
 
 /**
  * Build script: scans posts/YYYY/*.md and produces dist/posts.json
- * with a list of posts, and copies images from posts/YYYY/images/*
- * to dist/YYYY/images.
- *
- * Expected post metadata at the top of each .md file (until first blank line):
- *   slug:...
- *   header:...
- *   subheader:...
- *   date:YYYY-MM-DD
- *   tags:tag1,tag2,...
+ * with a list of posts, renders each post to HTML into dist/YYYY/<slug>.html,
+ * and copies images from posts/YYYY/images/* to dist/images/YYYY.
  */
 
 async function ensureDir(dir) {
@@ -24,12 +17,7 @@ async function ensureDir(dir) {
 }
 
 async function pathExists(p) {
-  try {
-    await fs.stat(p);
-    return true;
-  } catch {
-    return false;
-  }
+  try { await fs.stat(p); return true; } catch { return false; }
 }
 
 async function listDir(dir) {
@@ -58,9 +46,19 @@ function parseMetadata(md) {
       case 'header':
         meta.header = rawVal;
         break;
-      case 'subheader':
-        meta.subheader = rawVal.replace(/^['"]|['"]$/g, '');
+      case 'subheader': {
+        // Only strip surrounding quotes if they are a matching pair; preserve leading apostrophes like 'ere
+        let v = rawVal;
+        if (v.length >= 2) {
+          const first = v[0];
+          const last = v[v.length - 1];
+          if ((first === '"' || first === "'") && last === first) {
+            v = v.slice(1, -1);
+          }
+        }
+        meta.subheader = v;
         break;
+      }
       case 'date':
         meta.date = rawVal;
         break;
@@ -128,16 +126,12 @@ async function main() {
     const md = new MarkdownIt({ html: false, linkify: true, typographer: false });
     md.use(implicitFigures, { figcaption: true });
     const escape = md.utils.escapeHtml;
-    const orig = md.renderer.rules.image;
-    md.renderer.rules.image = (tokens, i, opts, env, self) => {
+    md.renderer.rules.image = (tokens, i) => {
       const t = tokens[i];
       let src = t.attrGet('src') || '';
       if (src.startsWith('images/')) {
         src = `/images/${year}/${src.slice(7)}`;
       }
-      // implicit-figures will construct <figure> and <figcaption> from alt (moves alt into figcaption)
-      // We still emit an <img>, typically with empty alt (plugin clears it), but keep attributes safe.
-      const alt = t.content || '';
       const title = t.attrGet('title');
       const titleAttr = title ? ` title=\"${escape(title)}\"` : '';
       return `<img src=\"${escape(src)}\" alt=\"\"${titleAttr}>`;
@@ -198,3 +192,4 @@ main().catch((err) => {
   console.error(err);
   process.exit(1);
 });
+
