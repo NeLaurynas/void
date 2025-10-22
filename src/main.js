@@ -62,31 +62,30 @@ function init() {
 	});
 
     // Preload on hover/focus for instant open
+    const findPostAnchor = (target) => target.closest('a.post-link');
+    const extractMeta = (anchor) => ({
+        header: anchor.querySelector('.post-title').textContent,
+        subheader: anchor.querySelector('.post-sub').textContent,
+        date: anchor.querySelector('.post-date').textContent,
+    });
+
     const maybePreload = (e) => {
-        const path = e.composedPath ? e.composedPath() : [];
-        const anchor = (path.find((n) => n && n.matches && n.matches('a.post-link')) || (e.target && e.target.closest && e.target.closest('a.post-link'))) || null;
+        const anchor = findPostAnchor(e.target);
         if (!anchor || !listView.contains(anchor)) return;
         const id = anchor.getAttribute('data-post');
-        const header = anchor.querySelector('.post-title')?.textContent || '';
-        const subheader = anchor.querySelector('.post-sub')?.textContent || '';
-        const date = anchor.querySelector('.post-date')?.textContent || '';
-        preloadPost(id, { header, subheader, date });
+        preloadPost(id, extractMeta(anchor));
     };
 
     listView.addEventListener('mouseover', maybePreload, false);
     listView.addEventListener('focusin', maybePreload, false);
 
     listView.addEventListener('click', (e) => {
-        const path = e.composedPath ? e.composedPath() : [];
-        const anchor = (path.find((n) => n && n.matches && n.matches('a.post-link')) || (e.target && e.target.closest && e.target.closest('a.post-link'))) || null;
+        const anchor = findPostAnchor(e.target);
         if (!anchor || !listView.contains(anchor)) return;
         e.preventDefault();
         e.stopPropagation();
         const id = anchor.getAttribute('data-post');
-        const header = anchor.querySelector('.post-title').textContent;
-        const subheader = anchor.querySelector('.post-sub').textContent;
-        const date = anchor.querySelector('.post-date').textContent;
-        openPost(id, true, anchor, { header, subheader, date });
+        openPost(id, true, anchor, extractMeta(anchor));
     }, false);
 }
 

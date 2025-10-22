@@ -9,6 +9,16 @@ const listHeading = document.querySelector('.list-title');
 
 // Cache in browser localStorage (id -> HTML)
 
+function deriveYear(id, meta) {
+    let year = (meta && meta.date ? meta.date.slice(0, 4) : '') || '';
+    if (!year) {
+        const fallbackFromList = document.querySelector(`.post-link[data-post="${id}"]`);
+        const date = fallbackFromList ? (fallbackFromList.querySelector('.post-date')?.textContent || '') : '';
+        if (date) year = date.slice(0, 4);
+    }
+    return year;
+}
+
 function ensureDetailArticle(id, meta) {
 	let target = document.querySelector(`article.post-detail[data-post="${id}"]`);
 	if (target) return target;
@@ -21,11 +31,9 @@ function ensureDetailArticle(id, meta) {
 	target.hidden = true;
 	target.setAttribute('aria-hidden', 'true');
 
-	// Allow missing meta; attempt to derive from list, else fallback
-	const fallbackFromList = document.querySelector(`.post-link[data-post="${id}"]`);
-	const header = meta && meta.header ? meta.header : (fallbackFromList ? (fallbackFromList.querySelector('.post-title')?.textContent || '') : '');
-	const subheader = meta && meta.subheader ? meta.subheader : (fallbackFromList ? (fallbackFromList.querySelector('.post-sub')?.textContent || '') : '');
-	const date = meta && meta.date ? meta.date : (fallbackFromList ? (fallbackFromList.querySelector('.post-date')?.textContent || '') : '');
+	const header = meta.header;
+	const subheader = meta.subheader;
+	const date = meta.date;
 
 	target.innerHTML = `
         <h1 class="post-title">${header}</h1>
@@ -51,33 +59,28 @@ export function openPost(id, push, sourceLink, meta) {
 	let target = document.querySelector(`article.post-detail[data-post="${id}"]`) || null;
 	if (!target) target = ensureDetailArticle(id, meta);
 
-	if (push) {
-		// Prefer canonical /year/slug when we can infer the year
-		let year = (meta && meta.date ? meta.date.slice(0, 4) : '') || '';
-		if (!year) {
-			const fallbackFromList = document.querySelector(`.post-link[data-post="${id}"]`);
-			const date = fallbackFromList ? (fallbackFromList.querySelector('.post-date')?.textContent || '') : '';
-			if (date) year = date.slice(0, 4);
-		}
-		const newPath = year ? `/${year}/${encodeURIComponent(id)}` : `/${encodeURIComponent(id)}`;
-		history.pushState({}, '', newPath);
-	}
+    if (push) {
+        // Prefer canonical /year/slug when we can infer the year
+        const year = deriveYear(id, meta);
+        const newPath = year ? `/${year}/${encodeURIComponent(id)}` : `/${encodeURIComponent(id)}`;
+        history.pushState({}, '', newPath);
+    }
 
 	withVT(() => {
 		hide(listView);
-		if (listHeading) hide(listHeading);
+		hide(listHeading);
 		show(detailView);
 		detailView.querySelectorAll('article.post-detail').forEach((el) => {
 			el.hidden = el !== target;
 		});
 
-		const newTitle = target ? target.querySelector('.post-title') : null;
-		newTitle && newTitle.classList.add('vt-title');
+		const newTitle = target.querySelector('.post-title');
+		newTitle.classList.add('vt-title');
 	}, {
 		before: () => {
-			const sourceTitle = sourceLink ? sourceLink.querySelector('.post-title') : null;
+			const sourceTitle = sourceLink.querySelector('.post-title');
 			document.querySelectorAll('.vt-title').forEach((el) => el.classList.remove('vt-title'));
-			sourceTitle && sourceTitle.classList.add('vt-title');
+			sourceTitle.classList.add('vt-title');
 		}, after: () => document.querySelectorAll('.vt-title').forEach((el) => el.classList.remove('vt-title')),
 	});
 }
@@ -101,12 +104,7 @@ export function preloadPost(id, meta) {
 	content.setAttribute('data-loading', 'true');
 
     // Compute URL; if date missing, attempt to derive from list DOM
-    let year = (meta && meta.date ? meta.date.slice(0, 4) : '') || '';
-    if (!year) {
-        const fallbackFromList = document.querySelector(`.post-link[data-post="${id}"]`);
-        const date = fallbackFromList ? (fallbackFromList.querySelector('.post-date')?.textContent || '') : '';
-        if (date) year = date.slice(0,4);
-    }
+    const year = deriveYear(id, meta);
     if (!year) {
         content.removeAttribute('data-loading');
         return;
@@ -147,7 +145,7 @@ export function closePost(push) {
 	withVT(
 		() => {
 			show(listView);
-			if (listHeading) show(listHeading);
+			show(listHeading);
 			hide(detailView);
 			listTitleEl && listTitleEl.classList.add('vt-title');
 		},
