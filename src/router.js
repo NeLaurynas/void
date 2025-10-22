@@ -31,6 +31,17 @@ export function route() {
 		return;
 	}
 
+	// If a year is present in the URL, it must match the post's actual year
+	if (year) {
+		const actualDate = link.querySelector('.post-date').textContent;
+		const actualYear = actualDate.slice(0, 4);
+		if (actualYear !== year) {
+			closePost(false);
+			if (location.pathname !== '/') history.replaceState({}, '', '/');
+			return;
+		}
+	}
+
 	// If year is missing in URL, try to derive and replace for canonical path
 	if (!year) {
 		const date = link.querySelector('.post-date')?.textContent || '';

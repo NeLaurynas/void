@@ -19,5 +19,17 @@ export function applyTheme(theme) {
 
 export function setTheme(theme) {
 	localStorage.setItem('theme', theme);
+
+	if (document.startViewTransition) {
+		withVT(() => applyTheme(theme));
+		return;
+	}
+
+	// Fallback: temporarily enable color transitions
+	document.documentElement.classList.add('theme-animating');
 	applyTheme(theme);
+	setTimeout(() => {
+		document.documentElement.classList.remove('theme-animating');
+	}, 220);
 }
+import {withVT} from "./viewTransition.js";

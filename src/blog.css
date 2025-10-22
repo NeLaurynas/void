@@ -36,6 +36,15 @@ body {
 	-moz-osx-font-smoothing: grayscale;
 }
 
+/* Smooth theme change */
+@media (prefers-reduced-motion: no-preference) {
+  html.theme-animating, html.theme-animating * {
+    transition: background-color 800ms ease, color 800ms ease,
+                border-color 800ms ease, outline-color 800ms ease,
+                fill 800ms ease, stroke 800ms ease;
+  }
+}
+
 /* Header */
 .site-header {
     position: fixed;
@@ -145,7 +154,7 @@ body {
 	grid-column: 1 / -1;
 }
 .post-detail .post-sub { grid-column: 1; }
-.post-meta { grid-column: 2; text-align: right; }
+.post-meta { grid-column: 2; text-align: right; margin: 0; }
 .post-detail .content { grid-column: 1 / -1; margin-top: 12px; text-align: justify; }
 .post-detail .content p { margin: 12px 0; text-indent: 1.5em; }
 
