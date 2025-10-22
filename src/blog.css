@@ -63,6 +63,7 @@ body {
 }
 .theme-controls { gap: 8px; justify-self: end; align-items: center; }
 .theme-btn {
+	-webkit-appearance: none;
 	appearance: none;
 	border: 1px solid var(--border);
 	background: var(--card);
@@ -93,8 +94,7 @@ body {
 	font-weight: 300;
 	letter-spacing: 0.3px;
 	font-size: clamp(1.6rem, 4vw, 2.1rem);
-	margin: 24px 0 10px;
-	color: var(--text);
+	margin: 0 0 17px;
 }
 
 /* Post list */
@@ -103,7 +103,6 @@ body {
 	background: transparent;
 	border: 0;
 	border-radius: 0;
-	overflow: visible;
 }
 .post-card { border-top: 1px solid var(--border); }
 .post-card:first-of-type { border-top: none; }
@@ -165,7 +164,6 @@ body {
 /* Images and figures inside post content */
 .post-detail .content img { width: 100%; height: auto; display: block; }
 .post-detail .content figure { margin: 16px 0; }
-.post-detail .content figure > img { width: 100%; height: auto; }
 .post-detail .content figure > figcaption {
     text-align: center;
     margin-top: 6px;
@@ -219,7 +217,6 @@ body {
 	/* Keep base text color intact; draw only colored shadows */
 	color: transparent;
 	-webkit-text-fill-color: transparent;
-	mix-blend-mode: normal;
 }
 .brand-link.glitch::before {
 	text-shadow: 1px 0 0 var(--text);
