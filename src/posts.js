@@ -14,15 +14,23 @@ function ensureDetailArticle(id, meta) {
 	if (target) return target;
 
 	target = document.createElement('article');
+
 	target.id = `post-${id}`;
 	target.className = 'post-detail';
 	target.setAttribute('data-post', id);
 	target.hidden = true;
 	target.setAttribute('aria-hidden', 'true');
+
+	// Allow missing meta; attempt to derive from list, else fallback
+	const fallbackFromList = document.querySelector(`.post-link[data-post="${id}"]`);
+	const header = meta && meta.header ? meta.header : (fallbackFromList ? (fallbackFromList.querySelector('.post-title')?.textContent || '') : '');
+	const subheader = meta && meta.subheader ? meta.subheader : (fallbackFromList ? (fallbackFromList.querySelector('.post-sub')?.textContent || '') : '');
+	const date = meta && meta.date ? meta.date : (fallbackFromList ? (fallbackFromList.querySelector('.post-date')?.textContent || '') : '');
+
 	target.innerHTML = `
-        <h1 class="post-title">${meta.header}</h1>
-        <p class="post-sub">${meta.subheader}</p>
-        <p class="post-meta"><time>${meta.date}</time></p>
+        <h1 class="post-title">${header}</h1>
+        <p class="post-sub">${subheader}</p>
+        <p class="post-meta"><time>${date}</time></p>
         <div class="content"><p data-not-loaded>Įrašas kraunamas...</p></div>
     `;
 	detailView.appendChild(target);
@@ -39,7 +47,9 @@ const hide = (el) => {
 };
 
 export function openPost(id, push, sourceLink, meta) {
-	const target = ensureDetailArticle(id, meta);
+	// Find preloaded article; if missing, create as fallback to avoid empty detail
+	let target = document.querySelector(`article.post-detail[data-post="${id}"]`) || null;
+	if (!target) target = ensureDetailArticle(id, meta);
 
 	if (push) history.pushState({}, '', `/${id}`);
 
@@ -51,34 +61,50 @@ export function openPost(id, push, sourceLink, meta) {
 			el.hidden = el !== target;
 		});
 
-		const newTitle = target.querySelector('.post-title');
-		newTitle.classList.add('vt-title');
+		const newTitle = target ? target.querySelector('.post-title') : null;
+		newTitle && newTitle.classList.add('vt-title');
 	}, {
 		before: () => {
-			const sourceTitle = sourceLink.querySelector('.post-title');
+			const sourceTitle = sourceLink ? sourceLink.querySelector('.post-title') : null;
 			document.querySelectorAll('.vt-title').forEach((el) => el.classList.remove('vt-title'));
-			sourceTitle.classList.add('vt-title');
+			sourceTitle && sourceTitle.classList.add('vt-title');
 		}, after: () => document.querySelectorAll('.vt-title').forEach((el) => el.classList.remove('vt-title')),
 	});
+}
 
-	if (localStorage.getItem(id) !== null) {
-		const cached = localStorage.getItem(id);
-		const content = target.querySelector('.content');
-		// Only inject cached HTML if content is still the placeholder
+export function preloadPost(id, meta) {
+	// Ensure DOM shell exists to accept content
+	const target = ensureDetailArticle(id, meta);
+	const content = target.querySelector('.content');
+
+	// Load from cache immediately if present
+	const cached = localStorage.getItem(id);
+	if (cached !== null) {
 		if (content.querySelector('[data-not-loaded]')) {
 			content.innerHTML = cached;
 		}
 		return;
 	}
 
-	const year = meta.date.slice(0, 4);
+	// Avoid duplicate fetches
+	if (content.hasAttribute('data-loading')) return;
+	content.setAttribute('data-loading', 'true');
+
+	// Compute URL; if date missing, try inferring from meta or skip
+	const year = (meta && meta.date ? meta.date.slice(0, 4) : '') || '';
+	if (!year) {
+		content.removeAttribute('data-loading');
+		return;
+	}
 	const url = `/${year}/${id}.html`;
 	fetch(url)
 		.then((r) => r.text())
 		.then((html) => {
 			localStorage.setItem(id, html);
-			const content = target.querySelector('.content');
 			content.innerHTML = html;
+		})
+		.finally(() => {
+			content.removeAttribute('data-loading');
 		});
 }
 
@@ -107,3 +133,4 @@ export function closePost(push) {
 		}
 	);
 };
+
