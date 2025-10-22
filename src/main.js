@@ -10,6 +10,37 @@ const homeLink = document.querySelector('#homeLink');
 const listView = document.querySelector('#list-view');
 const headerEl = document.querySelector('.site-header');
 
+// Cache housekeeping: keep theme, drop post caches after 24h
+const CACHE_EPOCH_KEY = 'postsCacheCreatedAt';
+function cleanExpiredPostCache() {
+    try {
+        const now = Date.now();
+        const raw = localStorage.getItem(CACHE_EPOCH_KEY);
+        if (!raw) {
+            // First visit: record epoch, don't touch existing keys
+            localStorage.setItem(CACHE_EPOCH_KEY, String(now));
+            return;
+        }
+        const ts = Number(raw);
+        if (!Number.isFinite(ts)) {
+            localStorage.setItem(CACHE_EPOCH_KEY, String(now));
+            return;
+        }
+        const ONE_DAY = 24 * 60 * 60 * 1000;
+        if (now - ts > ONE_DAY) {
+            const keep = new Set(['theme', CACHE_EPOCH_KEY]);
+            const toDelete = [];
+            for (let i = 0; i < localStorage.length; i++) {
+                const k = localStorage.key(i);
+                if (k && !keep.has(k)) toDelete.push(k);
+            }
+            toDelete.forEach((k) => { try { localStorage.removeItem(k); } catch {} });
+            // Start a new epoch after cleanup
+            localStorage.setItem(CACHE_EPOCH_KEY, String(now));
+        }
+    } catch {}
+}
+
 function adjustHeaderOffset() {
     if (!headerEl) return;
     const h = headerEl.offsetHeight || 0;
@@ -17,6 +48,8 @@ function adjustHeaderOffset() {
 }
 
 function init() {
+    // Perform cache TTL housekeeping before rendering
+    cleanExpiredPostCache();
     glitchLoop();
     applyTheme();
     route();
