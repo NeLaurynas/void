@@ -1,3 +1,6 @@
+// Copyright (C) 2025 Laurynas 'Deviltry' Ekekeke
+// SPDX-License-Identifier: BSD-3-Clause
+
 const toLight = document.querySelector('#toLight');
 const toDark = document.querySelector('#toDark');
 const prefersDark = () => window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;

@@ -1,3 +1,6 @@
+// Copyright (C) 2025 Laurynas 'Deviltry' Ekekeke
+// SPDX-License-Identifier: BSD-3-Clause
+
 const rand = (a, b) => Math.floor(Math.random() * (b - a + 1)) + a;
 
 const homeLink = document.querySelector('#homeLink');

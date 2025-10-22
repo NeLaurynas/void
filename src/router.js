@@ -1,3 +1,6 @@
+// Copyright (C) 2025 Laurynas 'Deviltry' Ekekeke
+// SPDX-License-Identifier: BSD-3-Clause
+
 import {closePost, openPost} from "./posts.js";
 
 window.addEventListener('popstate', route);

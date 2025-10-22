@@ -1,3 +1,6 @@
+// Copyright (C) 2025 Laurynas 'Deviltry' Ekekeke
+// SPDX-License-Identifier: BSD-3-Clause
+
 export function withVT(run, {before, after} = {}) {
 	before && before();
 

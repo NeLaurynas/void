@@ -1,3 +1,6 @@
+// Copyright (C) 2025 Laurynas 'Deviltry' Ekekeke
+// SPDX-License-Identifier: BSD-3-Clause
+
 import {readFile, writeFile, mkdir} from 'node:fs/promises';
 import path from 'node:path';
 

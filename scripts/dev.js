@@ -1,3 +1,6 @@
+// Copyright (C) 2025 Laurynas 'Deviltry' Ekekeke
+// SPDX-License-Identifier: BSD-3-Clause
+
 import esbuild from 'esbuild';
 import http from 'node:http';
 import {readFile, writeFile, mkdir} from 'node:fs/promises';
