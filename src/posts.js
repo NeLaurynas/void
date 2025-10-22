@@ -10,23 +10,23 @@ const listHeading = document.querySelector('.list-title');
 // Cache in browser localStorage (id -> HTML)
 
 function ensureDetailArticle(id, meta) {
-    let target = document.querySelector(`article.post-detail[data-post="${id}"]`);
-    if (target) return target;
+	let target = document.querySelector(`article.post-detail[data-post="${id}"]`);
+	if (target) return target;
 
-    target = document.createElement('article');
-    target.id = `post-${id}`;
-    target.className = 'post-detail';
-    target.setAttribute('data-post', id);
-    target.hidden = true;
-    target.setAttribute('aria-hidden', 'true');
-    target.innerHTML = `
+	target = document.createElement('article');
+	target.id = `post-${id}`;
+	target.className = 'post-detail';
+	target.setAttribute('data-post', id);
+	target.hidden = true;
+	target.setAttribute('aria-hidden', 'true');
+	target.innerHTML = `
         <h1 class="post-title">${meta.header}</h1>
         <p class="post-sub">${meta.subheader}</p>
         <p class="post-meta"><time>${meta.date}</time></p>
-        <div class="content"><p>Įrašas kraunamas...</p></div>
+        <div class="content"><p data-not-loaded>Įrašas kraunamas...</p></div>
     `;
-    detailView.appendChild(target);
-    return target;
+	detailView.appendChild(target);
+	return target;
 }
 
 const show = (el) => {
@@ -39,54 +39,47 @@ const hide = (el) => {
 };
 
 export function openPost(id, push, sourceLink, meta) {
-    const target = ensureDetailArticle(id, meta);
+	const target = ensureDetailArticle(id, meta);
 
-    if (push) history.pushState({}, '', `/${id}`);
+	if (push) history.pushState({}, '', `/${id}`);
 
-    withVT(() => {
-        hide(listView);
-        if (listHeading) hide(listHeading);
-        show(detailView);
-        detailView.querySelectorAll('article.post-detail').forEach((el) => {
-            el.hidden = el !== target;
-        });
+	withVT(() => {
+		hide(listView);
+		if (listHeading) hide(listHeading);
+		show(detailView);
+		detailView.querySelectorAll('article.post-detail').forEach((el) => {
+			el.hidden = el !== target;
+		});
 
-        const newTitle = target.querySelector('.post-title');
-        newTitle.classList.add('vt-title');
-    }, {
-        before: () => {
-            const sourceTitle = sourceLink.querySelector('.post-title');
-            document.querySelectorAll('.vt-title').forEach((el) => el.classList.remove('vt-title'));
-            sourceTitle.classList.add('vt-title');
-        }, after: () => document.querySelectorAll('.vt-title').forEach((el) => el.classList.remove('vt-title')),
-    });
+		const newTitle = target.querySelector('.post-title');
+		newTitle.classList.add('vt-title');
+	}, {
+		before: () => {
+			const sourceTitle = sourceLink.querySelector('.post-title');
+			document.querySelectorAll('.vt-title').forEach((el) => el.classList.remove('vt-title'));
+			sourceTitle.classList.add('vt-title');
+		}, after: () => document.querySelectorAll('.vt-title').forEach((el) => el.classList.remove('vt-title')),
+	});
 
-    if (localStorage.getItem(id) !== null) {
-        const cached = localStorage.getItem(id);
-        const content = target.querySelector('.content');
-        content.innerHTML = cached;
-        // ensure links inside content open in new tab
-        content.querySelectorAll('a').forEach((a) => {
-            a.setAttribute('target', '_blank');
-            a.setAttribute('rel', 'noopener');
-        });
-        return;
-    }
+	if (localStorage.getItem(id) !== null) {
+		const cached = localStorage.getItem(id);
+		const content = target.querySelector('.content');
+		// Only inject cached HTML if content is still the placeholder
+		if (content.querySelector('[data-not-loaded]')) {
+			content.innerHTML = cached;
+		}
+		return;
+	}
 
-    const year = meta.date.slice(0, 4);
-    const url = `/${year}/${id}.html`;
-    fetch(url)
-        .then((r) => r.text())
-        .then((html) => {
-            localStorage.setItem(id, html);
-            const content = target.querySelector('.content');
-            content.innerHTML = html;
-            // ensure links inside content open in new tab
-            content.querySelectorAll('a').forEach((a) => {
-                a.setAttribute('target', '_blank');
-                a.setAttribute('rel', 'noopener');
-            });
-        });
+	const year = meta.date.slice(0, 4);
+	const url = `/${year}/${id}.html`;
+	fetch(url)
+		.then((r) => r.text())
+		.then((html) => {
+			localStorage.setItem(id, html);
+			const content = target.querySelector('.content');
+			content.innerHTML = html;
+		});
 }
 
 export function closePost(push) {

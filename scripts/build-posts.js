@@ -122,9 +122,16 @@ async function main() {
     const { copied } = await copyImages(yearDir, distRoot);
     totalImagesCopied += copied;
 
-    // Prepare markdown renderer for this year (image -> figure, figcaption, rewrite src)
+    // Prepare markdown renderer for this year
     const md = new MarkdownIt({ html: false, linkify: true, typographer: false });
     md.use(implicitFigures, { figcaption: true });
+    // Ensure links open in a new tab from generated HTML
+    md.renderer.rules.link_open = (tokens, i, options, env, self) => {
+      const token = tokens[i];
+      token.attrSet('target', '_blank');
+      token.attrSet('rel', 'noopener');
+      return self.renderToken(tokens, i, options);
+    };
     const escape = md.utils.escapeHtml;
     md.renderer.rules.image = (tokens, i) => {
       const t = tokens[i];
@@ -192,4 +199,3 @@ main().catch((err) => {
   console.error(err);
   process.exit(1);
 });
-
