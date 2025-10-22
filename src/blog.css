@@ -7,6 +7,8 @@
 	--border: #e5e7eb;       /* subtle border */
 	--accent: #1f6feb;       /* gentle blue */
 	--ring: #d2d7df;
+    --emphasis: #b45309;   /* darker orange on light */
+    --quote-line: #c8ced7; /* slightly stronger than border (light) */
 }
 
 html[data-theme="dark"] {
@@ -17,6 +19,8 @@ html[data-theme="dark"] {
 	--border: #21262d;       /* subtle dark border */
 	--accent: #86b6ff;       /* gentle blue */
 	--ring: #2a313a;
+    --emphasis: #f59e0b;   /* lighter orange on dark */
+    --quote-line: #313741; /* slightly stronger than border (dark) */
 }
 
 /* Resets */
@@ -143,8 +147,52 @@ body {
 }
 .post-detail .post-sub { grid-column: 1; }
 .post-meta { grid-column: 2; text-align: right; }
-.post-detail .content { grid-column: 1 / -1; margin-top: 12px; }
-.content p { margin: 12px 0; }
+.post-detail .content { grid-column: 1 / -1; margin-top: 12px; text-align: justify; }
+.post-detail .content p { margin: 12px 0; text-indent: 1.5em; }
+
+/* Links only inside post content */
+.post-detail .content a {
+    color: var(--accent);
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 2px;
+}
+.post-detail .content a:hover { text-decoration-color: currentColor; }
+
+/* Emphasis (cursive/italic) inside post content */
+.post-detail .content em,
+.post-detail .content i { color: var(--emphasis); }
+
+/* Images and figures inside post content */
+.post-detail .content img { width: 100%; height: auto; display: block; }
+.post-detail .content figure { margin: 16px 0; }
+.post-detail .content figure > img { width: 100%; height: auto; }
+.post-detail .content figure > figcaption {
+    text-align: center;
+    margin-top: 6px;
+    color: var(--muted);
+    font-size: 0.95rem;
+}
+
+/* Blockquotes inside post content */
+.post-detail .content blockquote {
+    position: relative;
+    margin: 16px 0;
+    padding: 8px 12px; /* lighter padding to reduce perceived indent */
+}
+.post-detail .content blockquote::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 20px;                 /* further trim from top */
+    bottom: 20px;              /* further trim from bottom */
+    width: 2px;               /* slimmer line */
+    background: var(--quote-line); /* slightly stronger than border */
+    border-radius: 1px;
+}
+.post-detail .content blockquote p {
+    margin: 10px 0;
+    text-indent: 0;           /* avoid double indent inside quotes */
+}
 
 /* View Transitions: we’ll assign this class dynamically to the title
    in list and detail so they morph between states. */

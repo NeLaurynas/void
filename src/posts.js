@@ -65,6 +65,11 @@ export function openPost(id, push, sourceLink, meta) {
         const cached = localStorage.getItem(id);
         const content = target.querySelector('.content');
         content.innerHTML = cached;
+        // ensure links inside content open in new tab
+        content.querySelectorAll('a').forEach((a) => {
+            a.setAttribute('target', '_blank');
+            a.setAttribute('rel', 'noopener');
+        });
         return;
     }
 
@@ -76,6 +81,11 @@ export function openPost(id, push, sourceLink, meta) {
             localStorage.setItem(id, html);
             const content = target.querySelector('.content');
             content.innerHTML = html;
+            // ensure links inside content open in new tab
+            content.querySelectorAll('a').forEach((a) => {
+                a.setAttribute('target', '_blank');
+                a.setAttribute('rel', 'noopener');
+            });
         });
 }
 

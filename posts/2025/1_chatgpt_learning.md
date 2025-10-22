@@ -23,7 +23,7 @@ Kodo generavimas - eh, kartais neblogai, kartais blogai. Mėgsta naudoti hexadec
 
 Kas erzina - jei sužmogintume ChatGPT - per daug sutinkantis, nesugeba pasakyti "ne", nepasitiki savimi, grynas "*yes man*" ir, be abejo, kartais neteisus. Pvz:
 
-Aš: "Pico PIO - how to control seven pins?"\
+>Aš: "Pico PIO - how to control seven pins?"\
 ChatGPT: "use SET PINS"\
 Aš: "SET PINS can send only 5 bits, I need 7"\
 Ch: "you are absolutely correct! use OUT PINS"\
