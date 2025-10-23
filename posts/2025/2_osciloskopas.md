@@ -12,9 +12,9 @@ Du 7 segmentų ekranėliai. Siekiant sutaupyti laidų ir pins kiekį - multiplex
 
 Problema - išjungus ekranėlį, jis išsijungia ne iškart, o palaipsniui. Todėl prieš įjungiant kitą, reikia palaukti. Tad sumažėja duty cycle ir ekranai šviečia blausiau. Ir kur problema? Ar mano kodas blogai reguliuoja signalus? Ar Pico siunčia blogai signalus? Ar laidai blogi? Ar pirmas NPN tranzistorius neišsijungia greitai? Ar antras PNP? Blogai paskaičiuoti rezistoriai? Pats ekranas nesugeba išsijungti greitai - fosforescencija?
 
-![įjungimas išjungimas kontroliuojamas NPN ir PNP tranzistorių poros - 3.3V yra Pico PIN siunčiamas signalas schemoje, 5V - pagrindinis power šaltinis](images/7disp_scheme.avif)
+![įjungimas išjungimas kontroliuojamas NPN ir PNP tranzistorių poros - 3.3V yra Pico PIN siunčiamas signalas schemoje, 5V - pagrindinis power šaltinis](images/7disp_scheme.avif "small")
 
-![](images/7display_start.avif)
+![](images/7display_start.avif "small")
 
 Viską tikrinti keičiant komponentus bandant atspėti problemą - nesmagu ir neproduktyvu.
 
@@ -30,15 +30,15 @@ Juos matau filmuose, elektronikos taisymo parduotuvėlėse - kažkokias bangeles
 
 Prijungiam prie Pico - geltonas kanalas pirmam ekranui, mėlynas - antram. Išsijungia iškart, pauzė, įsijungia kitas. Kodas veikia gerai, Pico - gerai. Prijungus prie sulituotos plokštės kontaktų - tas pats rezultatas, laidai - gerai.
 
-![](images/osci_screenshot.avif)
+![](images/osci_screenshot.avif "small")
 
 Prijungiam prie NPN tranzistoriaus kolektoriaus - išsijungia taip pat iškart, jokio overlap, viskas gerai.
 
-![](images/npn_ok.avif)
+![](images/npn_ok.avif "small")
 
 Prijungiam prie PNP tranzistoriaus kolektoriaus - bėda. Išjungus ne staigus srovės kritimas, bet palaipsniui. Kai įsijungia kitas ekranas, prieš tai buvęs dar turi srovės ir blausiai šviečia atvaizduodamas kito ekranėlio skaičius.
 
-![](images/pnp_bad.avif)
+![](images/pnp_bad.avif "small")
 
 # Ką daryt
 
@@ -50,14 +50,14 @@ Atsakymas:
 
 Gerai, pabandom pull up rezistorių prie vieno iš dviejų PNP tranzistorių bazės:
 
-![](images/test_result_osci.avif)
+![](images/test_result_osci.avif "small")
 
 Ir taip - geltonas kanalas beveik iškart išjungia srovę (palyginus su mėlynu). Ne tobulai - atkreipus ChatGPT dėmesį, pasiūlė naudoti 470 omų rezistorių. Neturėjau, palikau 1k, veikia good enough.
 
 Galutinis rezultatas - beveik tobulai:
 
-![](images/result_asdf.avif)
+![](images/result_asdf.avif "small")
 
 Ir atnaujinta diagrama:
 
-![](images/updated_scheme.avif)
+![](images/updated_scheme.avif "small")

@@ -175,7 +175,8 @@ body {
 .post-detail .content i { color: var(--emphasis); }
 
 /* Images and figures inside post content */
-.post-detail .content img { width: 100%; height: auto; display: block; }
+.post-detail .content img { width: 100%; height: auto; display: block; margin-left: auto; margin-right: auto; }
+.post-detail .content img.is-small { width: 50%; }
 .post-detail .content figure { margin: 16px 0; }
 .post-detail .content figure > figcaption {
     text-align: center;

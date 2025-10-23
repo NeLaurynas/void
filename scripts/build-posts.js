@@ -139,9 +139,32 @@ async function main() {
       if (src.startsWith('images/')) {
         src = `/images/${year}/${src.slice(7)}`;
       }
-      const title = t.attrGet('title');
+      const alt = t.content || t.attrGet('alt') || '';
+      let title = (t.attrGet('title') || '').trim();
+
+      // Interpret simple sizing hints in the title:
+      //  - "small" or "half" => width: 50%
+      //  - "w=NN%" or "width=NN%" / px => explicit width
+      let classes = [];
+      let widthStyle = '';
+
+      if (/\b(small|half)\b/i.test(title)) {
+        classes.push('is-small');
+        widthStyle = 'width:50%;';
+        title = title.replace(/\b(small|half)\b/ig, '').trim();
+      }
+      const m = title.match(/\b(?:w|width)\s*=\s*(\d{1,3})(%|px)?\b/i);
+      if (m) {
+        const unit = m[2] || '%';
+        widthStyle = `width:${m[1]}${unit};`;
+        title = title.replace(m[0], '').trim();
+      }
+
+      const classAttr = classes.length ? ` class=\"${classes.join(' ')}\"` : '';
+      const styleAttr = widthStyle ? ` style=\"${widthStyle}\"` : '';
       const titleAttr = title ? ` title=\"${escape(title)}\"` : '';
-      return `<img src=\"${escape(src)}\" alt=\"\"${titleAttr}>`;
+
+      return `<img src=\"${escape(src)}\" alt=\"${escape(alt)}\"${classAttr}${styleAttr}${titleAttr}>`;
     };
 
     for (const file of files) {
