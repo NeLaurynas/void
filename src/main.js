@@ -10,6 +10,7 @@ import {getMetaFromLink} from "./postMeta.js";
 const homeLink = document.querySelector('#homeLink');
 const listView = document.querySelector('#list-view');
 const headerEl = document.querySelector('.site-header');
+const backLink = document.querySelector('#backLink');
 
 // Cache housekeeping: keep theme, drop post caches after 24h
 const CACHE_EPOCH_KEY = 'postsCacheCreatedAt';
@@ -58,6 +59,11 @@ function init() {
     window.addEventListener('resize', adjustHeaderOffset);
 
 	homeLink.addEventListener('click', (e) => {
+		e.preventDefault();
+		closePost(true);
+	});
+
+	backLink?.addEventListener('click', (e) => {
 		e.preventDefault();
 		closePost(true);
 	});
