@@ -60,11 +60,15 @@ function init() {
 
 	homeLink.addEventListener('click', (e) => {
 		e.preventDefault();
+	});
+	homeLink.addEventListener('mousedown', (e) => {
 		closePost(true);
 	});
 
 	backLink?.addEventListener('click', (e) => {
 		e.preventDefault();
+	});
+	backLink?.addEventListener('mousedown', (e) => {
 		closePost(true);
 	});
 
@@ -83,10 +87,12 @@ function init() {
     listView.addEventListener('focusin', maybePreload, false);
 
     listView.addEventListener('click', (e) => {
-        const anchor = findPostAnchor(e.target);
-        if (!anchor || !listView.contains(anchor)) return;
         e.preventDefault();
         e.stopPropagation();
+    }, false);
+	listView.addEventListener('mousedown', (e) => {
+        const anchor = findPostAnchor(e.target);
+        if (!anchor || !listView.contains(anchor)) return;
         const id = anchor.getAttribute('data-post');
         openPost(id, true, anchor, extractMeta(anchor));
     }, false);

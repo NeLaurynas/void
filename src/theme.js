@@ -4,8 +4,8 @@
 const toLight = document.querySelector('#toLight');
 const toDark = document.querySelector('#toDark');
 const prefersDark = () => window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-toLight.addEventListener('click', () => setTheme('light'));
-toDark.addEventListener('click', () => setTheme('dark'));
+toLight.addEventListener('mousedown', () => setTheme('light'));
+toDark.addEventListener('mousedown', () => setTheme('dark'));
 
 export function applyTheme(theme) {
 	if (!theme) theme = localStorage.getItem('theme') ?? 'dark';
