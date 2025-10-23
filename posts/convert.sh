@@ -96,7 +96,7 @@ encode_gif() {
   done
 
   print "Encoding animated \"$input\" → \"$out\" (q=75, speed=3, yuv=444, frames=${#frames})"
-  avifenc -q 75 --speed 3 --yuv 444 "${enc_args[@]}" -o "$out"
+  avifenc -q 70 --speed 3 --yuv 444 "${enc_args[@]}" -o "$out"
 }
 
 # --- process each image ---
