@@ -200,13 +200,17 @@ body {
 .post-detail .content em,
 .post-detail .content i { color: var(--emphasis); }
 
-/* Images and figures inside post content */
-/* Add a bit more vertical spacing around images */
-.post-detail .content img { width: 100%; height: auto; display: block; margin: 24px auto; }
-.post-detail .content img.is-small { width: 50%; }
-/* Slightly increase figure spacing; avoid double margins for inner img */
+/* Images, videos, and figures inside post content */
+/* Add a bit more vertical spacing around media */
+.post-detail .content img,
+.post-detail .content iframe { width: 100%; height: auto; display: block; margin: 24px auto; }
+.post-detail .content iframe { aspect-ratio: 16 / 9; }
+.post-detail .content img.is-small,
+.post-detail .content iframe.is-small { width: 50%; }
+/* Slightly increase figure spacing; avoid double margins for inner media */
 .post-detail .content figure { margin: 24px 0; }
-.post-detail .content figure > img { margin: 0 auto; }
+.post-detail .content figure > img,
+.post-detail .content figure > iframe { margin: 0 auto; }
 .post-detail .content figure > figcaption {
     text-align: center;
     margin-top: 6px;

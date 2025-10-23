@@ -133,14 +133,50 @@ async function main() {
       return self.renderToken(tokens, i, options);
     };
     const escape = md.utils.escapeHtml;
+
+    function toYouTubeEmbed(url) {
+      // Accept: https://www.youtube.com/watch?v=ID[&t=90s], https://youtu.be/ID[?t=90], https://www.youtube.com/shorts/ID
+      // Return: https://www.youtube.com/embed/ID[?start=90]
+      try {
+        const u = new URL(url);
+        const host = u.hostname.toLowerCase();
+        let id = '';
+        if (host.endsWith('youtube.com')) {
+          if (u.pathname === '/watch') id = u.searchParams.get('v') || '';
+          else if (u.pathname.startsWith('/shorts/')) id = u.pathname.split('/')[2] || '';
+        } else if (host === 'youtu.be') {
+          id = (u.pathname.split('/')[1] || '').trim();
+        }
+        if (!id) return null;
+
+        // Derive start seconds from t or start query
+        let start = 0;
+        const t = u.searchParams.get('t') || u.searchParams.get('start');
+        if (t) {
+          // "90" or "1m30s" → seconds
+          const m = String(t).match(/^(?:(\d+)m)?(?:(\d+)s)?$|^(\d+)$/i);
+          if (m) {
+            if (m[3]) start = parseInt(m[3], 10) || 0; // plain seconds
+            else start = (parseInt(m[1] || '0', 10) * 60) + (parseInt(m[2] || '0', 10));
+          }
+        }
+        const q = start > 0 ? `?start=${start}` : '';
+        return `https://www.youtube.com/embed/${id}${q}`;
+      } catch {
+        return null;
+      }
+    }
+
     md.renderer.rules.image = (tokens, i) => {
       const t = tokens[i];
       let src = t.attrGet('src') || '';
+      const alt = t.content || t.attrGet('alt') || '';
+      let title = (t.attrGet('title') || '').trim();
+
+      // Images from local folder are rewritten to /images/<year>/...
       if (src.startsWith('images/')) {
         src = `/images/${year}/${src.slice(7)}`;
       }
-      const alt = t.content || t.attrGet('alt') || '';
-      let title = (t.attrGet('title') || '').trim();
 
       // Interpret simple sizing hints in the title:
       //  - "small" or "half" => width: 50%
@@ -160,10 +196,18 @@ async function main() {
         title = title.replace(m[0], '').trim();
       }
 
+      // If the source is a YouTube URL, render an iframe instead of <img>
+      const yt = toYouTubeEmbed(src);
       const classAttr = classes.length ? ` class=\"${classes.join(' ')}\"` : '';
       const styleAttr = widthStyle ? ` style=\"${widthStyle}\"` : '';
-      const titleAttr = title ? ` title=\"${escape(title)}\"` : '';
 
+      if (yt) {
+        const titleAttr = alt ? ` title=\"${escape(alt)}\"` : '';
+        return `<iframe src=\"${escape(yt)}\"${classAttr}${styleAttr}${titleAttr} frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" allowfullscreen></iframe>`;
+      }
+
+      // Default: regular image
+      const titleAttr = title ? ` title=\"${escape(title)}\"` : '';
       return `<img src=\"${escape(src)}\" alt=\"${escape(alt)}\"${classAttr}${styleAttr}${titleAttr}>`;
     };
 

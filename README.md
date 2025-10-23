@@ -58,6 +58,21 @@ Notes:
 - Alt text is used for figcaptions; leave it empty if you don’t want a caption.
 - All images are centered in the article; default width is 100%.
 
+## YouTube Embeds (image-like)
+
+You can embed a YouTube video using the same Markdown image syntax, and the builder will render a responsive `<iframe>` with the same sizing rules and figure caption behavior:
+
+- Use a YouTube URL as the image source:
+  - `![](https://www.youtube.com/watch?v=VIDEO_ID)`
+  - `![](https://youtu.be/VIDEO_ID)`
+  - Shorts are supported: `![](https://www.youtube.com/shorts/VIDEO_ID)`
+- Optional size hints in the title work the same way:
+  - Half width: `![](https://youtu.be/VIDEO_ID "small")`
+  - Custom width: `![](https://youtu.be/VIDEO_ID "w=60%")`
+- Provide alt text to show a caption under the video:
+  - `![Demo clip](https://youtu.be/VIDEO_ID)` → figure with caption “Demo clip”
+- Start time is respected from `t` or `start` query, e.g. `?t=90` or `?t=1m30s`.
+
 ## Architecture
 
 Build-time
