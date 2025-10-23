@@ -201,9 +201,12 @@ body {
 .post-detail .content i { color: var(--emphasis); }
 
 /* Images and figures inside post content */
-.post-detail .content img { width: 100%; height: auto; display: block; margin-left: auto; margin-right: auto; }
+/* Add a bit more vertical spacing around images */
+.post-detail .content img { width: 100%; height: auto; display: block; margin: 24px auto; }
 .post-detail .content img.is-small { width: 50%; }
-.post-detail .content figure { margin: 16px 0; }
+/* Slightly increase figure spacing; avoid double margins for inner img */
+.post-detail .content figure { margin: 24px 0; }
+.post-detail .content figure > img { margin: 0 auto; }
 .post-detail .content figure > figcaption {
     text-align: center;
     margin-top: 6px;
