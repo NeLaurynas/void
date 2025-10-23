@@ -112,8 +112,11 @@ body {
     z-index: 9; /* under header (10), above content */
 }
 .app:has(#detail-view:not([hidden])) .back-link { display: inline-block; }
-@media (max-width: 900px) {
-    .back-link { left: 12px; }
+@media (max-width: 1024px) {
+    .back-link {
+        left: 12px;
+        top: var(--backlink-top, calc(var(--header-h, 196px) + 5px));
+    }
 }
 .back-link:hover { outline: 2px solid var(--ring); }
 
