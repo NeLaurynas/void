@@ -11,6 +11,7 @@
 		"build:posts": "node scripts/build-posts.js",
 		"build": "npm run build:js && npm run build:css && npm run build:posts && npm run build:html",
 		"dev": "node scripts/dev.js",
+		"new": "node scripts/new-post.js",
 		"copyright": "node scripts/copyright.cjs"
 	},
 	"devDependencies": {
