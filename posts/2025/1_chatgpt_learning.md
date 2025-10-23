@@ -4,7 +4,7 @@ subheader:AI slop pradžia
 date:2025-01-07
 tags:ChatGPT,Pico
 
-![Quality AI generated related image](images/ai_slop_pico.avif)
+![Quality AI generated related image](images/ai_slop_pico.avif "small")
 
 # Intro
 Prieš ir pradėjus dirbti programuotuoju, [StackOverflow](https://stackoverflow.com/) forumą lankiau tikriausiai kas dieną porą metų. Augant patirčiai - lankymas retėjo. Tuomet prasidėjo AI ~~revoliucija~~ hype. Pabandžiau ChatGPT, Microsoft Copilot - nesužavėjo. 13 virš metų profesionaliai su ta pačia technologija dirbant - iškilus klausimams jei dokumentacija nepadeda - nepadės nei StackOverflow, nei ChatGPT - reikia skaityti problematinės bibliotekos kodą ir suprasti, kas ir kodėl vyksta.

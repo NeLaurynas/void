@@ -12,11 +12,11 @@ Porą 90-ųjų vasarų esu praleidęs pas tėvą darbe - neveikiančioje ar beve
 
 Smagu buvo parkour'int per industrinius vamzdžius, tiltelius. Bet smagiausia - ten buvęs valdymo pultas su krūva jungiklių. Atsisėsdavau ir žaisdavau - junginėji, įsivaizduoji esąs erdvėlaivio kapitonas. Nereikėjo ir šviečiančių lempučių.
 
-![Asociatyvi nuotrauka](images/target_design.avif)
+![Asociatyvi nuotrauka](images/target_design.avif "small")
 
 Lankantis Lemonoje užmačiau tumblerius, kasdien matau žaidžiantį sūnų ir kilo idėja padaryti žaislą panašų į tą valdymo bloką. Galima viską paprastai padaryti - prie baterijos prijungi tumblerį, prie jo LEDą - įjungi - šviečia. Bet aš - programuotojas, t.y. paprastoms problemoms išspręsti darau sudėtingus sprendimus (*job security*).
 
-![Tumbleris](images/tumbleris.avif)
+![Tumbleris](images/tumbleris.avif "small")
 
 Mikrokontroleriai. Žinau apie Arduino, toje pačioje Lemonoje pardavinėjami įvairūs [kits](https://www.lemona.lt/mikrovaldiklio-rinkinys-pradedantiems-arduino.html) - susirinkti ir susiprogramuoti važinėjantį robotuką ir pan. Kodėl nepradėjus dar vieno hobio, kai su mažamečiu vaiku laiko ir taip nėra? Ir man smagu, ir vaikui bus smagu.
 
