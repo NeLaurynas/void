@@ -72,7 +72,7 @@ async function main() {
       `date: ${date}`,
       `tags: ${tags}`,
       '',
-      `# ${header || slug}`,
+      `hello world`,
       '',
     ].join('\n');
 
@@ -95,4 +95,3 @@ main().catch((err) => {
   console.error(err);
   process.exit(1);
 });
-

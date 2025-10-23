@@ -1,10 +1,8 @@
 slug: pico-2-w-ir-žaislų-taisymas
 header: Pico 2 W ir žaislų taisymas
 subheader: new life for broken things
-date: 2025-10-23
+date: 2025-01-23
 tags: Pico,Pico W,RC
-
-# Pico 2 W ir žaislų taisymas
 
 Sidetrack nuo pirmo Pico projekto - RC tanko taisymas. Turim radijo bangomis valdomą tanką ir vaikas sudaužė pultelį. Ne bėda, galvoju, turi būti kažkokie universalūs pulteliai, kuriuos galima sukonfigūruoti. Bet - kainos prasideda nuo kelių šimtų ir nėra taip paprasta konfigūruoti - reikia reverse engineerinti protokolą, kad tankas suprastų komandas, blergh.
 
