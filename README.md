@@ -109,9 +109,7 @@ Runtime (client)
   - `openPost(id, push, link, meta)`: pushes canonical URL, swaps list→detail with View Transitions, and shows the requested article.
   - `closePost(push)`: returns to list with a View Transition and updates history.
   - Caching: post HTML is stored in `localStorage` under the slug key.
-- src/prettifyMarkdown.js
-  - `prettifyMarkdown(root)`: removes first‑line indent for single‑line paragraphs (avoids indenting one‑liners like labels).
-  - Idempotent via a `<!--md-fixed-->` marker; when first shown, the “fixed” HTML is re‑saved to cache to avoid re‑processing.
+  
 - src/theme.js + src/viewTransition.js
   - Theme switch uses View Transitions when available (fallback: brief CSS color transition).
 - src/blog.css

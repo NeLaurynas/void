@@ -5,16 +5,16 @@ import {readFile, writeFile, mkdir} from 'node:fs/promises';
 import path from 'node:path';
 
 function escapeHtml(s) {
-    return String(s)
-        .replaceAll('&', '&amp;')
-        .replaceAll('<', '&lt;')
-        .replaceAll('>', '&gt;')
-        .replaceAll('"', '&quot;')
-        .replaceAll("'", '&#39;');
+	return String(s)
+		.replaceAll('&', '&amp;')
+		.replaceAll('<', '&lt;')
+		.replaceAll('>', '&gt;')
+		.replaceAll('"', '&quot;')
+		.replaceAll("'", '&#39;');
 }
 
 function renderList(posts) {
-    return posts.map(p => `		<article class="post-card">
+	return posts.map(p => `		<article class="post-card">
 				<a href="/${escapeHtml(p.year || '')}/${escapeHtml(p.slug)}" class="post-link" data-post="${escapeHtml(p.slug)}">
 					<h2 class="post-title">${escapeHtml(p.header || '')}</h2>
 					<p class="post-sub">${escapeHtml(p.subheader || '')}</p>

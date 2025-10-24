@@ -7,7 +7,7 @@ import {getMetaFromLink} from "./postMeta.js";
 window.addEventListener('popstate', route);
 
 export function route() {
-	const rawPath = (location.pathname || '').slice(1);
+	const rawPath = location.pathname.slice(1);
 	if (!rawPath) {
 		closePost(false);
 		return;
@@ -21,14 +21,13 @@ export function route() {
 		year = parts[0];
 		slugEnc = parts.slice(1).join('/');
 	}
-	let id = slugEnc;
-	try { id = decodeURIComponent(slugEnc); } catch {}
+	const id = decodeURIComponent(slugEnc);
 
 	// Ensure the slug exists in the list; otherwise, render home
 	const link = document.querySelector(`.post-link[data-post="${id}"]`);
 	if (!link) {
 		closePost(false);
-		if (location.pathname !== '/') history.replaceState({}, '', '/');
+		history.replaceState({}, '', '/');
 		return;
 	}
 
@@ -38,7 +37,7 @@ export function route() {
 		const actualYear = meta.date.slice(0, 4);
 		if (actualYear !== year) {
 			closePost(false);
-			if (location.pathname !== '/') history.replaceState({}, '', '/');
+			history.replaceState({}, '', '/');
 			return;
 		}
 	}
@@ -47,9 +46,7 @@ export function route() {
 	if (!year) {
 		const date = link.querySelector('.post-date')?.textContent || '';
 		const y = date ? date.slice(0, 4) : '';
-		if (y) {
-			try { history.replaceState({}, '', `/${y}/${encodeURIComponent(id)}`); } catch {}
-		}
+		if (y) history.replaceState({}, '', `/${y}/${encodeURIComponent(id)}`);
 	}
 
 	const meta = getMetaFromLink(link);

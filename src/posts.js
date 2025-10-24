@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 
 import {withVT} from "./viewTransition.js";
-import {prettifyMarkdown, isPrettified} from "./prettifyMarkdown.js";
 import {deriveYear} from "./postMeta.js";
 
 const detailView = document.querySelector('#detail-view');
@@ -74,22 +73,10 @@ export function openPost(id, push, sourceLink, meta) {
 
 		const newTitle = target.querySelector('.post-title');
 		newTitle.classList.add('vt-title');
-		// After making article visible, apply prettifying once and update cache
-		const content = target.querySelector('.content');
-		if (!isPrettified(target)) {
-			prettifyMarkdown(target);
-			try {
-				localStorage.setItem(id, content.innerHTML);
-			} catch {
-			}
-		}
 	}, {
 		before: () => {
 			const sourceTitle = sourceLink.querySelector('.post-title');
-			try {
-				window.scrollTo(0, 0);
-			} catch {
-			}
+			window.scrollTo(0, 0);
 			clearVTTitles();
 			sourceTitle.classList.add('vt-title');
 		}, after: () => {
@@ -106,9 +93,7 @@ export function preloadPost(id, meta) {
 	// Load from cache immediately if present
 	const cached = localStorage.getItem(id);
 	if (cached !== null) {
-		if (content.querySelector('[data-not-loaded]')) {
-			content.innerHTML = cached;
-		}
+		if (content.querySelector('[data-not-loaded]')) content.innerHTML = cached;
 		return;
 	}
 
@@ -131,29 +116,11 @@ export function preloadPost(id, meta) {
 		.then((html) => {
 			localStorage.setItem(id, html);
 			content.innerHTML = html;
-			// If article is visible, prettify and update cache to fixed version
-			const article = content.closest('article.post-detail');
-			if (article && !article.hidden && !isPrettified(article)) {
-				prettifyMarkdown(article);
-				try {
-					localStorage.setItem(id, content.innerHTML);
-				} catch {
-				}
-			}
 		})
 		.catch(() => {
-			// If this was a direct navigation to an unknown/failed slug, go home
-			const raw = (location.pathname || '').slice(1);
-			let current = raw;
-			try {
-				current = decodeURIComponent(raw);
-			} catch {
-			}
+			const current = decodeURIComponent((location.pathname || '').slice(1));
 			if (current === id) {
-				try {
-					history.replaceState({}, '', '/');
-				} catch {
-				}
+				history.replaceState({}, '', '/');
 				closePost(false);
 			}
 		})

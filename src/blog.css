@@ -134,10 +134,15 @@ body {
 
 /* Post list */
 .list-view {
-	/* Remove table-like frame; keep only horizontal separators */
-	background: transparent;
-	border: 0;
-	border-radius: 0;
+    /* Remove table-like frame; keep only horizontal separators */
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    /* Make list text unselectable for snappier interactions */
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none; /* iOS: disable callout on long-press */
 }
 .post-card { border-top: 1px solid var(--border); }
 .post-card:first-of-type { border-top: none; }
@@ -145,7 +150,6 @@ body {
 .post-link { gap: 4px 20px; text-decoration: none; color: inherit; padding: 18px 22px; }
 .post-link:hover .post-title { text-decoration: underline; }
 .post-title {
-	/* Larger, bold, uppercase titles like the reference */
 	font-size: clamp(1.1rem, 2.2vw, 1.75rem);
 	text-transform: uppercase;
 	letter-spacing: 0.4px;
@@ -160,7 +164,6 @@ body {
 	margin-left: 16px;
 	justify-self: end;
 	text-align: right;
-	/* Pin date to the right of the title (same row) */
 	grid-column: 2;
 	grid-row: 1;
 }
@@ -172,7 +175,6 @@ body {
 /* Detail view */
 .detail-view { padding-top: 8px; }
 .post-detail { padding: 4px; row-gap: 6px; }
-/* Ensure hidden detail posts truly disappear even though .post-detail sets display */
 .post-detail[hidden] { display: none !important; }
 .post-detail .post-title {
 	font-size: 2.25rem;
@@ -182,11 +184,7 @@ body {
 .post-detail .post-sub { grid-column: 1; }
 .post-meta { grid-column: 2; text-align: right; margin: 0; }
 .post-detail .content { grid-column: 1 / -1; margin-top: 12px; text-align: justify; }
-.post-detail .content p { margin: 12px 0; text-indent: 1.5em; }
-/* If the content has only a single paragraph, do not indent it */
-.post-detail .content p:only-child { text-indent: 0; }
-/* If JS marks a paragraph as single-line, do not indent it */
-.post-detail .content p.no-indent { text-indent: 0; }
+.post-detail .content p { margin: 12px 0; }
 
 /* Links only inside post content */
 .post-detail .content a {
@@ -196,18 +194,14 @@ body {
 }
 .post-detail .content a:hover { text-decoration-color: currentColor; }
 
-/* Emphasis (cursive/italic) inside post content */
 .post-detail .content em,
 .post-detail .content i { color: var(--emphasis); }
 
-/* Images, videos, and figures inside post content */
-/* Add a bit more vertical spacing around media */
 .post-detail .content img,
 .post-detail .content iframe { width: 100%; height: auto; display: block; margin: 24px auto; }
 .post-detail .content iframe { aspect-ratio: 16 / 9; }
 .post-detail .content img.is-small,
 .post-detail .content iframe.is-small { width: 50%; }
-/* Slightly increase figure spacing; avoid double margins for inner media */
 .post-detail .content figure { margin: 24px 0; }
 .post-detail .content figure > img,
 .post-detail .content figure > iframe { margin: 0 auto; }
@@ -218,29 +212,23 @@ body {
     font-size: 0.95rem;
 }
 
-/* Blockquotes inside post content */
 .post-detail .content blockquote {
     position: relative;
     margin: 16px 0;
-    padding: 8px 12px; /* lighter padding to reduce perceived indent */
+    padding: 8px 12px;
 }
 .post-detail .content blockquote::before {
     content: "";
     position: absolute;
     left: 0;
-    top: 20px;                 /* further trim from top */
-    bottom: 20px;              /* further trim from bottom */
-    width: 2px;               /* slimmer line */
-    background: var(--quote-line); /* slightly stronger than border */
+    top: 20px;
+    bottom: 20px;
+    width: 2px;
+    background: var(--quote-line);
     border-radius: 1px;
 }
-.post-detail .content blockquote p {
-    margin: 10px 0;
-    text-indent: 0;           /* avoid double indent inside quotes */
-}
+.post-detail .content blockquote p { margin: 10px 0; }
 
-/* View Transitions: we’ll assign this class dynamically to the title
-   in list and detail so they morph between states. */
 .vt-title { view-transition-name: post-title; }
 
 /* Reduce motion preferences */
@@ -254,16 +242,14 @@ body {
 /* Selection */
 ::selection { background: var(--text); color: var(--bg); }
 
-/* Brand glitch effect (subtle, occasional) */
 .brand-link.glitch::before,
 .brand-link.glitch::after {
 	content: attr(data-text);
 	position: absolute;
 	inset: 0;
 	pointer-events: none;
-	/* Keep base text color intact; draw only colored shadows */
-	color: transparent;
-	-webkit-text-fill-color: transparent;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
 }
 .brand-link.glitch::before {
 	text-shadow: 1px 0 0 var(--text);

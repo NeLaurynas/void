@@ -3,9 +3,15 @@
 
 const toLight = document.querySelector('#toLight');
 const toDark = document.querySelector('#toDark');
-const prefersDark = () => window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-toLight.addEventListener('mousedown', () => setTheme('light'));
-toDark.addEventListener('mousedown', () => setTheme('dark'));
+const prefersDark = () => window.matchMedia('(prefers-color-scheme: dark)').matches;
+toLight.addEventListener('mousedown', (e) => {
+    if (e.button !== 0 || e.ctrlKey || e.metaKey) return; // only plain left click
+    setTheme('light');
+});
+toDark.addEventListener('mousedown', (e) => {
+    if (e.button !== 0 || e.ctrlKey || e.metaKey) return; // only plain left click
+    setTheme('dark');
+});
 
 export function applyTheme(theme) {
 	if (!theme) theme = localStorage.getItem('theme') ?? 'dark';
@@ -32,4 +38,5 @@ export function setTheme(theme) {
 		document.documentElement.classList.remove('theme-animating');
 	}, 220);
 }
+
 import {withVT} from "./viewTransition.js";

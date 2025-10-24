@@ -27,18 +27,26 @@ function broadcastReload() {
 }
 
 async function copyHtmlDev() {
-    await mkdir(distDir, {recursive: true});
-    const srcPath = path.join(root, 'src', 'blog.html');
-    const outPath = path.join(distDir, 'blog.html');
-    let html = await readFile(srcPath, 'utf8');
-    // Replace list-view with posts
-    function escapeHtml(s){return String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#39;');}
-    function renderList(posts){return posts.map(p=>`\t\t<article class="post-card">\n\t\t\t<a href="/${escapeHtml(p.year||'')}/${escapeHtml(p.slug)}" class="post-link" data-post="${escapeHtml(p.slug)}">\n\t\t\t\t<h2 class="post-title">${escapeHtml(p.header||'')}</h2>\n\t\t\t\t<p class="post-sub">${escapeHtml(p.subheader||'')}</p>\n\t\t\t\t<time class="post-date">${escapeHtml(p.date||'')}</time>\n\t\t\t</a>\n\t\t</article>`).join('\n');}
-    try {
-        const posts = JSON.parse(await readFile(path.join(distDir, 'posts.json'), 'utf8')).posts || [];
-        const listHtml = renderList(posts);
-        html = html.replace(/<section id="list-view" class="list-view">[\s\S]*?<\/section>/, `<section id="list-view" class="list-view">\n${listHtml}\n\t</section>`);
-    } catch {}
+	await mkdir(distDir, {recursive: true});
+	const srcPath = path.join(root, 'src', 'blog.html');
+	const outPath = path.join(distDir, 'blog.html');
+	let html = await readFile(srcPath, 'utf8');
+
+	// Replace list-view with posts
+	function escapeHtml(s) {
+		return String(s).replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#39;');
+	}
+
+	function renderList(posts) {
+		return posts.map(p => `\t\t<article class="post-card">\n\t\t\t<a href="/${escapeHtml(p.year || '')}/${escapeHtml(p.slug)}" class="post-link" data-post="${escapeHtml(p.slug)}">\n\t\t\t\t<h2 class="post-title">${escapeHtml(p.header || '')}</h2>\n\t\t\t\t<p class="post-sub">${escapeHtml(p.subheader || '')}</p>\n\t\t\t\t<time class="post-date">${escapeHtml(p.date || '')}</time>\n\t\t\t</a>\n\t\t</article>`).join('\n');
+	}
+
+	try {
+		const posts = JSON.parse(await readFile(path.join(distDir, 'posts.json'), 'utf8')).posts || [];
+		const listHtml = renderList(posts);
+		html = html.replace(/<section id="list-view" class="list-view">[\s\S]*?<\/section>/, `<section id="list-view" class="list-view">\n${listHtml}\n\t</section>`);
+	} catch {
+	}
 	// Adjust asset paths to be relative to /dist
 	html = html.replaceAll('../dist/', './').replaceAll('./dist/', './');
 	// Inject a tiny live reload client
@@ -46,8 +54,8 @@ async function copyHtmlDev() {
 	if (!/__livereload/.test(html)) {
 		html = html.replace(/<\/body>/i, `${snippet}</body>`);
 	}
-    await writeFile(outPath, html, 'utf8');
-    console.log('[dev] Copied blog.html -> dist/blog.html (with live reload)');
+	await writeFile(outPath, html, 'utf8');
+	console.log('[dev] Copied blog.html -> dist/blog.html (with live reload)');
 }
 
 function contentType(filePath) {
