@@ -99,7 +99,7 @@ Build-time
 Runtime (client)
 - src/main.js
   - Housekeeping: clears post HTML caches in `localStorage` every 24h (keeps theme).
-  - Initializes theme, router, header sizing, glitch effect, and list event handlers (hover/focus preload, click open).
+  - Initializes theme, router, header sizing, glitch effect, and list event handlers (hover/focus preload; opens on plain left mousedown; ctrl/cmd/middle-click use browser default; right-click ignored).
   - Preload behavior: hovering or focusing a post link preloads its HTML into `localStorage` so clicking opens instantly.
 - src/router.js
   - Handles navigation on `popstate` and initial load. Accepts `/slug` or `/YEAR/slug` and canonicalizes to `/YEAR/slug`.
