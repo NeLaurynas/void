@@ -31,12 +31,26 @@ function cleanExpiredPostCache() {
 	}
 }
 
+function isLocalhost() {
+    const h = (location.hostname || '').toLowerCase();
+    return h === 'localhost' || h === '127.0.0.1' || h === '::1';
+}
+
+function clearAllCacheIfLocalhost() {
+    if (!isLocalhost()) return;
+    try {
+        localStorage.clear();
+    } catch {}
+}
+
 function adjustHeaderOffset() {
 	const h = headerEl ? headerEl.offsetHeight : 0;
 	document.documentElement.style.setProperty('--header-h', h + 'px');
 }
 
 function init() {
+	// If running on localhost, clear all caches regardless
+	clearAllCacheIfLocalhost();
 	// Perform cache TTL housekeeping before rendering
 	cleanExpiredPostCache();
 	glitchLoop();
