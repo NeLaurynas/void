@@ -3,19 +3,22 @@
 	"version": "1.0.0",
 	"private": true,
 	"license": "AGPL-3.0-only",
-	"type": "module",
+    "type": "module",
+    "packageManager": "bun@1.1.30",
+    "engines": {
+        "bun": ">=1.1.0"
+    },
 	"scripts": {
-		"build:js": "esbuild src/main.js --bundle --minify --outfile=dist/bundle.js",
-		"build:css": "esbuild src/blog.css --minify --outfile=dist/blog.css",
-		"build:html": "node scripts/copy-html.js",
-		"build:posts": "node scripts/build-posts.js",
-		"build": "npm run build:js && npm run build:css && npm run build:posts && npm run build:html",
-		"dev": "node scripts/dev.js",
-		"new": "node scripts/new-post.js",
-		"copyright": "node scripts/copyright.cjs"
+		"build:js": "bun build src/main.js --bundle --minify --outfile=dist/bundle.js",
+		"build:css": "bun build src/blog.css --minify --outfile=dist/blog.css",
+		"build:html": "bun scripts/copy-html.js",
+		"build:posts": "bun scripts/build-posts.js",
+		"build": "bun run build:js && bun run build:css && bun run build:posts && bun run build:html",
+		"dev": "bun scripts/dev.js",
+		"new": "bun scripts/new-post.js",
+		"copyright": "bun scripts/copyright.cjs"
 	},
 	"devDependencies": {
-		"esbuild": "^0.25.11",
 		"markdown-it": "^14.1.0",
 		"markdown-it-implicit-figures": "^0.12.0"
 	}

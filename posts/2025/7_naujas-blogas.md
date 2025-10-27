@@ -1,7 +1,7 @@
 slug: naujas-blogas
 header: Naujas blogas
 subheader: max AI slop
-date: 2025-11-04
+date: draft
 tags: blog,ChatGPT
 
 Kyla noras kaišioti savo mintis kitiems, idealiausia būtų [video forma](https://www.youtube.com/@killmeh2), bet nėra laiko. Ir pardaviau visą audio-video įrangą.

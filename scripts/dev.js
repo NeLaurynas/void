@@ -1,11 +1,11 @@
 // Copyright (C) 2025 Laurynas 'Deviltry' Ekekeke
 // SPDX-License-Identifier: BSD-3-Clause
 
-import esbuild from 'esbuild';
 import http from 'node:http';
 import {readFile, writeFile, mkdir} from 'node:fs/promises';
 import {watch, statSync, createReadStream} from 'node:fs';
 import path from 'node:path';
+import { spawn } from 'node:child_process';
 
 const root = process.cwd();
 const distDir = path.join(root, 'dist');
@@ -158,28 +158,24 @@ function startServer() {
 }
 
 async function main() {
-	await mkdir(distDir, {recursive: true});
+    await mkdir(distDir, {recursive: true});
 
-	// JS bundle watch
-	const jsCtx = await esbuild.context({
-		entryPoints: ['src/main.js'],
-		bundle: true,
-		minify: true,
-		outfile: 'dist/bundle.js',
-		logLevel: 'silent',
-	});
-	await jsCtx.rebuild();
-	await jsCtx.watch();
+    // JS/CSS bundle watch using Bun's bundler for parity with production
+    const startWatch = (args, label) => {
+        const proc = spawn('bun', ['build', ...args, '--watch'], {
+            cwd: root,
+            stdio: ['ignore', 'pipe', 'pipe'],
+        });
+        proc.stdout.on('data', (c) => process.stdout.write(`[${label}] ${c}`));
+        proc.stderr.on('data', (c) => process.stderr.write(`[${label}] ${c}`));
+        proc.on('exit', (code) => {
+            console.log(`[${label}] exited with code ${code}`);
+        });
+        return proc;
+    };
 
-	// CSS minify watch
-	const cssCtx = await esbuild.context({
-		entryPoints: ['src/blog.css'],
-		minify: true,
-		outfile: 'dist/blog.css',
-		logLevel: 'silent',
-	});
-	await cssCtx.rebuild();
-	await cssCtx.watch();
+    const jsProc = startWatch(['src/main.js', '--bundle', '--minify', '--outfile=dist/bundle.js'], 'bun:js');
+    const cssProc = startWatch(['src/blog.css', '--minify', '--outfile=dist/blog.css'], 'bun:css');
 
 	// HTML copy + watch
 	await copyHtmlDev();
@@ -201,11 +197,12 @@ async function main() {
 
 	startServer();
 
-	const shutdown = async () => {
-		console.log('\n[dev] Shutting down…');
-		await Promise.all([jsCtx.dispose(), cssCtx.dispose()]);
-		process.exit(0);
-	};
+    const shutdown = async () => {
+        console.log('\n[dev] Shutting down…');
+        try { jsProc.kill('SIGTERM'); } catch {}
+        try { cssProc.kill('SIGTERM'); } catch {}
+        process.exit(0);
+    };
 	process.on('SIGINT', shutdown);
 	process.on('SIGTERM', shutdown);
 }

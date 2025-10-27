@@ -10,7 +10,7 @@
     --emphasis: #b45309;   /* darker orange on light */
     --quote-line: #c8ced7; /* slightly stronger than border (light) */
     /* Typography scale */
-    --font-boost: 1.06;
+    --font-boost: 1.05;
     /* Code blocks */
     --code-bg: #e9edf3;        /* slightly darker light code bg */
     --code-inline-bg: #eef1f5; /* light inline code background */
@@ -218,7 +218,7 @@ body {
     border: 0;
     padding: 0;
     color: inherit; /* follow theme text */
-    font-size: calc(0.9rem / var(--font-boost)); /* slightly smaller; still independent of boost */
+    font-size: calc(0.95rem / var(--font-boost)); /* slightly smaller; still independent of boost */
     line-height: 1.5;
 }
 
@@ -228,7 +228,7 @@ body {
     border: 1px solid var(--border);
     border-radius: 6px;
     padding: 0.12em 0.35em;
-    font-size: calc(1rem / var(--font-boost)); /* keep code at pre-boost size */
+    font-size: calc(0.95rem / var(--font-boost)); /* keep code at pre-boost size */
     white-space: nowrap;
 }
 
