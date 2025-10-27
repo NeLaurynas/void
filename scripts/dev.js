@@ -5,7 +5,7 @@ import http from 'node:http';
 import {readFile, writeFile, mkdir} from 'node:fs/promises';
 import {watch, statSync, createReadStream} from 'node:fs';
 import path from 'node:path';
-import { spawn } from 'node:child_process';
+import {spawn} from 'node:child_process';
 
 const root = process.cwd();
 const distDir = path.join(root, 'dist');
@@ -158,24 +158,24 @@ function startServer() {
 }
 
 async function main() {
-    await mkdir(distDir, {recursive: true});
+	await mkdir(distDir, {recursive: true});
 
-    // JS/CSS bundle watch using Bun's bundler for parity with production
-    const startWatch = (args, label) => {
-        const proc = spawn('bun', ['build', ...args, '--watch'], {
-            cwd: root,
-            stdio: ['ignore', 'pipe', 'pipe'],
-        });
-        proc.stdout.on('data', (c) => process.stdout.write(`[${label}] ${c}`));
-        proc.stderr.on('data', (c) => process.stderr.write(`[${label}] ${c}`));
-        proc.on('exit', (code) => {
-            console.log(`[${label}] exited with code ${code}`);
-        });
-        return proc;
-    };
+	// JS/CSS bundle watch using Bun's bundler for parity with production
+	const startWatch = (args, label) => {
+		const proc = spawn('bun', ['build', ...args, '--watch'], {
+			cwd: root,
+			stdio: ['ignore', 'pipe', 'pipe'],
+		});
+		proc.stdout.on('data', (c) => process.stdout.write(`[${label}] ${c}`));
+		proc.stderr.on('data', (c) => process.stderr.write(`[${label}] ${c}`));
+		proc.on('exit', (code) => {
+			console.log(`[${label}] exited with code ${code}`);
+		});
+		return proc;
+	};
 
-    const jsProc = startWatch(['src/main.js', '--bundle', '--minify', '--outfile=dist/bundle.js'], 'bun:js');
-    const cssProc = startWatch(['src/blog.css', '--minify', '--outfile=dist/blog.css'], 'bun:css');
+	const jsProc = startWatch(['src/main.js', '--bundle', '--minify', '--outfile=dist/bundle.js'], 'bun:js');
+	const cssProc = startWatch(['src/blog.css', '--minify', '--outfile=dist/blog.css'], 'bun:css');
 
 	// HTML copy + watch
 	await copyHtmlDev();
@@ -197,12 +197,18 @@ async function main() {
 
 	startServer();
 
-    const shutdown = async () => {
-        console.log('\n[dev] Shutting down…');
-        try { jsProc.kill('SIGTERM'); } catch {}
-        try { cssProc.kill('SIGTERM'); } catch {}
-        process.exit(0);
-    };
+	const shutdown = async () => {
+		console.log('\n[dev] Shutting down…');
+		try {
+			jsProc.kill('SIGTERM');
+		} catch {
+		}
+		try {
+			cssProc.kill('SIGTERM');
+		} catch {
+		}
+		process.exit(0);
+	};
 	process.on('SIGINT', shutdown);
 	process.on('SIGTERM', shutdown);
 }

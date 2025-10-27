@@ -32,15 +32,16 @@ function cleanExpiredPostCache() {
 }
 
 function isLocalhost() {
-    const h = (location.hostname || '').toLowerCase();
-    return h === 'localhost' || h === '127.0.0.1' || h === '::1';
+	const h = (location.hostname || '').toLowerCase();
+	return h === 'localhost' || h === '127.0.0.1' || h === '::1';
 }
 
 function clearAllCacheIfLocalhost() {
-    if (!isLocalhost()) return;
-    try {
-        localStorage.clear();
-    } catch {}
+	if (!isLocalhost()) return;
+	try {
+		localStorage.clear();
+	} catch {
+	}
 }
 
 function adjustHeaderOffset() {
@@ -59,17 +60,17 @@ function init() {
 	adjustHeaderOffset();
 	window.addEventListener('resize', adjustHeaderOffset);
 
-    // Navigation controls: click preventDefault; mousedown triggers for snappier feel
-    homeLink.addEventListener('click', (e) => e.preventDefault());
-    homeLink.addEventListener('mousedown', (e) => {
-        if (e.button !== 0 || e.ctrlKey || e.metaKey) return; // only plain left click
-        closePost(true);
-    });
-    backLink?.addEventListener('click', (e) => e.preventDefault());
-    backLink?.addEventListener('mousedown', (e) => {
-        if (e.button !== 0 || e.ctrlKey || e.metaKey) return; // only plain left click
-        closePost(true);
-    });
+	// Navigation controls: click preventDefault; mousedown triggers for snappier feel
+	homeLink.addEventListener('click', (e) => e.preventDefault());
+	homeLink.addEventListener('mousedown', (e) => {
+		if (e.button !== 0 || e.ctrlKey || e.metaKey) return; // only plain left click
+		closePost(true);
+	});
+	backLink?.addEventListener('click', (e) => e.preventDefault());
+	backLink?.addEventListener('mousedown', (e) => {
+		if (e.button !== 0 || e.ctrlKey || e.metaKey) return; // only plain left click
+		closePost(true);
+	});
 
 	// Preload on hover/focus for instant open
 	const findPostAnchor = (target) => target.closest('a.post-link');
@@ -85,25 +86,25 @@ function init() {
 	listView.addEventListener('mouseover', maybePreload, false);
 	listView.addEventListener('focusin', maybePreload, false);
 
-    // Cancel default click only for plain left-click on a post link;
-    // allow ctrl/cmd/middle-click to use browser default (e.g., open in new tab)
-    listView.addEventListener('click', (e) => {
-        const anchor = findPostAnchor(e.target);
-        if (!anchor || !listView.contains(anchor)) return;
-        const hasModifier = e.ctrlKey || e.metaKey || e.altKey || e.shiftKey;
-        const isPlainLeft = e.button === 0 && !hasModifier;
-        if (isPlainLeft) {
-            e.preventDefault();
-            e.stopPropagation();
-        }
-    }, false);
-    listView.addEventListener('mousedown', (e) => {
-        if (e.button !== 0 || e.ctrlKey || e.metaKey) return; // only plain left click
-        const anchor = findPostAnchor(e.target);
-        if (!anchor || !listView.contains(anchor)) return;
-        const id = anchor.getAttribute('data-post');
-        openPost(id, true, anchor, extractMeta(anchor));
-    }, false);
+	// Cancel default click only for plain left-click on a post link;
+	// allow ctrl/cmd/middle-click to use browser default (e.g., open in new tab)
+	listView.addEventListener('click', (e) => {
+		const anchor = findPostAnchor(e.target);
+		if (!anchor || !listView.contains(anchor)) return;
+		const hasModifier = e.ctrlKey || e.metaKey || e.altKey || e.shiftKey;
+		const isPlainLeft = e.button === 0 && !hasModifier;
+		if (isPlainLeft) {
+			e.preventDefault();
+			e.stopPropagation();
+		}
+	}, false);
+	listView.addEventListener('mousedown', (e) => {
+		if (e.button !== 0 || e.ctrlKey || e.metaKey) return; // only plain left click
+		const anchor = findPostAnchor(e.target);
+		if (!anchor || !listView.contains(anchor)) return;
+		const id = anchor.getAttribute('data-post');
+		openPost(id, true, anchor, extractMeta(anchor));
+	}, false);
 }
 
 init();

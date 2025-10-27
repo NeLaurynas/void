@@ -5,12 +5,12 @@ const toLight = document.querySelector('#toLight');
 const toDark = document.querySelector('#toDark');
 const prefersDark = () => window.matchMedia('(prefers-color-scheme: dark)').matches;
 toLight.addEventListener('mousedown', (e) => {
-    if (e.button !== 0 || e.ctrlKey || e.metaKey) return; // only plain left click
-    setTheme('light');
+	if (e.button !== 0 || e.ctrlKey || e.metaKey) return; // only plain left click
+	setTheme('light');
 });
 toDark.addEventListener('mousedown', (e) => {
-    if (e.button !== 0 || e.ctrlKey || e.metaKey) return; // only plain left click
-    setTheme('dark');
+	if (e.button !== 0 || e.ctrlKey || e.metaKey) return; // only plain left click
+	setTheme('dark');
 });
 
 export function applyTheme(theme) {
