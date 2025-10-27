@@ -215,7 +215,18 @@ async function main() {
 
 			// Default: regular image
 			const titleAttr = title ? ` title=\"${escape(title)}\"` : '';
-			return `<img src=\"${escape(src)}\" alt=\"${escape(alt)}\"${classAttr}${styleAttr}${titleAttr}>`;
+			const imgHtml = `<img src=\"${escape(src)}\" alt=\"${escape(alt)}\"${classAttr}${styleAttr}${titleAttr}>`;
+
+			// If image is already wrapped in a link (e.g., Markdown [![]]() ),
+			// avoid nesting anchors. Detect common pattern link_open -> image -> link_close.
+			const prev = tokens[i - 1];
+			const next = tokens[i + 1];
+			const alreadyLinked = prev && prev.type === 'link_open' && next && next.type === 'link_close';
+			if (alreadyLinked) return imgHtml;
+
+			// Wrap image in a link to itself that opens in a new tab
+			const href = escape(src);
+			return `<a href=\"${href}\" target=\"_blank\" rel=\"noopener\">${imgHtml}</a>`;
 		};
 
 		for (const file of files) {
@@ -223,6 +234,11 @@ async function main() {
 			const filePath = path.join(yearDir, file);
 			const content = await fs.readFile(filePath, 'utf8');
 			const meta = parseMetadata(content);
+
+			// Skip drafts: if date is explicitly set to "draft", do not publish
+			if (String(meta.date || '').trim().toLowerCase() === 'draft') {
+				continue;
+			}
 
 			// Strip metadata header from content (first block until blank line)
 			const parts = content.split(/\r?\n\r?\n/); // split by first blank line

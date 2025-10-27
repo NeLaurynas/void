@@ -68,7 +68,8 @@ async function main() {
 		const idx = await nextIndex(postsYearDir);
 		const fileName = `${idx}_${slug}.md`;
 		const filePath = path.join(postsYearDir, fileName);
-		const date = todayISO();
+		// Default new posts as drafts; author sets real date when publishing
+		const date = 'draft';
 
 		const meta = [
 			`slug: ${slug}`,

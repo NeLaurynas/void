@@ -8,7 +8,7 @@ Recommended: use the helper to scaffold a post interactively.
 
 - Run: `npm run new`
 - Prompts for header, slug (defaults from header), subheader, and tags.
-- Creates: `posts/<YEAR>/<index>_<slug>.md` with today’s date and a starter body.
+- Creates: `posts/<YEAR>/<index>_<slug>.md` with `date: draft` and a starter body.
 - Tries to open the file in VS Code if `code` is available.
 
 Manual (optional): create a file under `posts/<YEAR>/<something>.md`. Start with a metadata block (key: value, one per line), then a blank line, then the content.
@@ -35,10 +35,16 @@ Fields:
 - `slug`: URL slug used for the post (`/<year>/<slug>`)
 - `header`: Post title, shown in list and detail
 - `subheader`: Subtitle under the title
-- `date`: ISO date `YYYY-MM-DD` (used for sorting and canonical year)
+- `date`: ISO date `YYYY-MM-DD` (used for sorting and canonical year), or `draft` to keep the post unpublished (excluded from the build)
 - `tags`: Comma-separated list (optional)
 
 The builder strips the metadata header automatically and renders the rest via Markdown.
+
+## Drafts
+
+- You can keep a post as a draft by setting `date: draft` in the metadata.
+- Drafts are omitted from `dist/posts.json` and no `dist/<YEAR>/<slug>.html` is generated.
+- To publish, change `date` to the desired `YYYY-MM-DD` and rebuild.
 
 ## Images, Captions, and Sizing
 
