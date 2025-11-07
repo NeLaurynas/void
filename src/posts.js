@@ -101,6 +101,9 @@ export function openPost(id, push, sourceLink, meta) {
 		history.pushState({}, '', newPath);
 	}
 
+	// Update document title to the post title
+	document.title = meta?.header || document.title;
+
 	withVT(() => {
 		hide(listView);
 		hide(listHeading);
@@ -131,7 +134,7 @@ export function openPost(id, push, sourceLink, meta) {
 	}
 	// Ensure remaining images start loading once opened.
 	activateDeferredImages(target);
-}
+} 
 
 export function preloadPost(id, meta) {
 	// Ensure DOM shell exists to accept content
@@ -185,6 +188,9 @@ export function preloadPost(id, meta) {
 
 export function closePost(push) {
 	if (push) history.pushState({}, '', '/');
+
+	// Restore document title for the list/home view
+	document.title = 'VOID';
 
 	const openDetail = detailView.querySelector('article.post-detail:not([hidden])');
 	const openId = openDetail ? openDetail.getAttribute('data-post') : null;
