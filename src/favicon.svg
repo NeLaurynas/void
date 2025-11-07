@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <style>
+    :root { color-scheme: light dark; }
+    .bg { fill: #111; }
+    .fg { fill: #fff; }
+    @media (prefers-color-scheme: light) {
+      .bg { fill: #fff; }
+      .fg { fill: #111; }
+    }
+  </style>
+  <rect class="bg" x="2" y="2" width="60" height="60" rx="14" ry="14"/>
+  <g class="fg" transform="rotate(180 32 32)">
+    <path d="M20 46 L32 14 L44 46 L38.8 46 L32 27.5 L25.2 46 Z"/>
+  </g>
+</svg>

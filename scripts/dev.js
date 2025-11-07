@@ -109,7 +109,7 @@ function startServer() {
 
 			let reqPath = decodeURIComponent((req.url.split('?')[0] || '/'));
 			const ext = path.extname(reqPath).toLowerCase();
-			const isStatic = ext === '.css' || ext === '.js' || ext === '.avif' || ext === '.html';
+			const isStatic = ext === '.css' || ext === '.js' || ext === '.avif' || ext === '.html' || ext === '.svg';
 
 			if (isStatic) {
 				const rel = reqPath.startsWith('/') ? reqPath.slice(1) : reqPath;
@@ -159,6 +159,16 @@ function startServer() {
 
 async function main() {
 	await mkdir(distDir, {recursive: true});
+
+	// Copy favicon (and other simple assets) into dist for dev server
+	try {
+		const favSrc = path.join(root, 'src', 'favicon.svg');
+		const favDst = path.join(distDir, 'favicon.svg');
+		await writeFile(favDst, await readFile(favSrc));
+		console.log('[dev] Copied favicon.svg');
+	} catch {
+		// ignore – optional asset
+	}
 
 	// JS/CSS bundle watch using Bun's bundler for parity with production
 	const startWatch = (args, label) => {
