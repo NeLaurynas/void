@@ -50,6 +50,45 @@ function clearVTTitles() {
 	document.querySelectorAll('.vt-title').forEach((el) => el.classList.remove('vt-title'));
 }
 
+// Transform fetched HTML so that only the first two images keep `src`.
+function deferImagesInHtml(html, keep = 2) {
+	try {
+		const parser = new DOMParser();
+		const doc = parser.parseFromString(html, 'text/html');
+		let count = 0;
+		const imgs = [...doc.querySelectorAll('img')];
+		for (const img of imgs) {
+			if (!img.hasAttribute('src')) continue;
+			if (count < keep) {
+				count++;
+				continue;
+			}
+			const src = img.getAttribute('src');
+			if (!src) continue;
+			img.setAttribute('data-src', src);
+			img.removeAttribute('src');
+		}
+		return doc.body.innerHTML;
+	} catch {
+		return html;
+	}
+}
+
+// When the post is opened, replace data-src back to src to load remaining images.
+function activateDeferredImages(root) {
+	try {
+		root.querySelectorAll('img[data-src]').forEach((img) => {
+			const src = img.getAttribute('data-src');
+			if (src) {
+				img.setAttribute('src', src);
+				img.removeAttribute('data-src');
+			}
+		});
+	} catch {
+		// ignore
+	}
+}
+
 export function openPost(id, push, sourceLink, meta) {
 	// Find preloaded article; if missing, create as fallback to avoid empty detail
 	let target = document.querySelector(`article.post-detail[data-post="${id}"]`) || null;
@@ -83,6 +122,15 @@ export function openPost(id, push, sourceLink, meta) {
 			clearVTTitles();
 		},
 	});
+
+	// If cached mutated HTML exists and the content is still placeholder, inject it now.
+	const content = target.querySelector('.content');
+	const cached = localStorage.getItem(id);
+	if (content && cached && content.querySelector('[data-not-loaded]')) {
+		content.innerHTML = cached;
+	}
+	// Ensure remaining images start loading once opened.
+	activateDeferredImages(target);
 }
 
 export function preloadPost(id, meta) {
@@ -94,6 +142,8 @@ export function preloadPost(id, meta) {
 	const cached = localStorage.getItem(id);
 	if (cached !== null) {
 		if (content.querySelector('[data-not-loaded]')) content.innerHTML = cached;
+		// If already open, load deferred images now
+		if (!target.hidden) activateDeferredImages(target);
 		return;
 	}
 
@@ -114,8 +164,12 @@ export function preloadPost(id, meta) {
 			return r.text();
 		})
 		.then((html) => {
-			localStorage.setItem(id, html);
-			content.innerHTML = html;
+			// Replace img src with data-src for all but the first two
+			const mutated = deferImagesInHtml(html, 2);
+			localStorage.setItem(id, mutated);
+			content.innerHTML = mutated;
+			// If the post is currently open, immediately load deferred images
+			if (!target.hidden) activateDeferredImages(target);
 		})
 		.catch(() => {
 			const current = decodeURIComponent((location.pathname || '').slice(1));
