@@ -1,7 +1,7 @@
 slug: naujas-blogas
 header: Naujas blogas
 subheader: max AI slop
-date: draft
+date: 2025-11-07
 tags: blog,ChatGPT
 
 Kyla noras kaišioti savo mintis kitiems, idealiausia būtų [video forma](https://www.youtube.com/@killmeh2), bet nėra laiko. Ir pardaviau visą audio-video įrangą.
@@ -24,6 +24,8 @@ Kaip jaunuolis, kuris yra technologijų priešakyje, matau, kad atsakymas į ši
 1. `codex` - openAI AI coding agent AI AI - "me want blog, here's html [Pasted 21809 chars] - but make it good - no react, no tailwind"
 1. ???
 1. Boom, gan gerai atrodantis paprastas ir greitai veikiantis blogas.
+
+Ir taip *boring part* (platforma) deleguojama AI, o *fun part* - post'ų rašymas - paliekamas man.
 
 # ???
 
