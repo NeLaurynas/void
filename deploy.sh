@@ -1,5 +1,8 @@
 #!/bin/sh
 # copy this to ~ like void.sh and do ssh void.gorgut.eu 'sh void.sh'
+export BUN_INSTALL="${BUN_INSTALL:-$HOME/.bun}"
+export PATH="$BUN_INSTALL/bin:$PATH"
+
 cd void
 git pull
 bun install
