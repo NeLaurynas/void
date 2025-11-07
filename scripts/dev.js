@@ -59,19 +59,21 @@ async function copyHtmlDev() {
 }
 
 function contentType(filePath) {
-	const ext = path.extname(filePath).toLowerCase();
-	switch (ext) {
-		case '.html':
-			return 'text/html; charset=utf-8';
-		case '.js':
-			return 'application/javascript; charset=utf-8';
-		case '.css':
-			return 'text/css; charset=utf-8';
-		case '.map':
-			return 'application/json; charset=utf-8';
-		case '.svg':
-			return 'image/svg+xml';
-		case '.png':
+    const ext = path.extname(filePath).toLowerCase();
+    switch (ext) {
+        case '.html':
+            return 'text/html; charset=utf-8';
+        case '.js':
+            return 'application/javascript; charset=utf-8';
+        case '.css':
+            return 'text/css; charset=utf-8';
+        case '.txt':
+            return 'text/plain; charset=utf-8';
+        case '.map':
+            return 'application/json; charset=utf-8';
+        case '.svg':
+            return 'image/svg+xml';
+        case '.png':
 			return 'image/png';
 		case '.jpg':
 		case '.jpeg':
@@ -108,8 +110,8 @@ function startServer() {
 			}
 
 			let reqPath = decodeURIComponent((req.url.split('?')[0] || '/'));
-			const ext = path.extname(reqPath).toLowerCase();
-			const isStatic = ext === '.css' || ext === '.js' || ext === '.avif' || ext === '.html' || ext === '.svg';
+                const ext = path.extname(reqPath).toLowerCase();
+                const isStatic = ext === '.css' || ext === '.js' || ext === '.avif' || ext === '.html' || ext === '.svg' || ext === '.txt' || ext === '.png' || ext === '.jpg' || ext === '.jpeg' || ext === '.gif';
 
 			if (isStatic) {
 				const rel = reqPath.startsWith('/') ? reqPath.slice(1) : reqPath;
@@ -158,17 +160,25 @@ function startServer() {
 }
 
 async function main() {
-	await mkdir(distDir, {recursive: true});
+    await mkdir(distDir, {recursive: true});
 
-	// Copy favicon (and other simple assets) into dist for dev server
-	try {
-		const favSrc = path.join(root, 'src', 'favicon.svg');
-		const favDst = path.join(distDir, 'favicon.svg');
-		await writeFile(favDst, await readFile(favSrc));
-		console.log('[dev] Copied favicon.svg');
-	} catch {
-		// ignore – optional asset
-	}
+    // Copy favicon (and other simple assets) into dist for dev server
+    try {
+        const favSrc = path.join(root, 'src', 'favicon.svg');
+        const favDst = path.join(distDir, 'favicon.svg');
+        await writeFile(favDst, await readFile(favSrc));
+        console.log('[dev] Copied favicon.svg');
+    } catch {
+        // ignore – optional asset
+    }
+
+    // Copy robots.txt for dev server if present
+    try {
+        const robSrc = path.join(root, 'src', 'robots.txt');
+        const robDst = path.join(distDir, 'robots.txt');
+        await writeFile(robDst, await readFile(robSrc));
+        console.log('[dev] Copied robots.txt');
+    } catch {}
 
 	// JS/CSS bundle watch using Bun's bundler for parity with production
 	const startWatch = (args, label) => {

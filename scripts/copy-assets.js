@@ -27,6 +27,7 @@ async function main() {
 
   const assets = [
     {src: path.join(root, 'src', 'favicon.svg'), dst: path.join(dist, 'favicon.svg')},
+    {src: path.join(root, 'src', 'robots.txt'), dst: path.join(dist, 'robots.txt')},
   ];
 
   let copied = 0;
@@ -40,4 +41,3 @@ main().catch((err) => {
   console.error(err);
   process.exit(1);
 });
-
