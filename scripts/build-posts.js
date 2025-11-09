@@ -191,11 +191,10 @@ async function main() {
 			let classes = [];
 			let widthStyle = '';
 
-			if (/\b(small|half)\b/i.test(title)) {
-				classes.push('is-small');
-				widthStyle = 'width:50%;';
-				title = title.replace(/\b(small|half)\b/ig, '').trim();
-			}
+            if (/\b(small|half)\b/i.test(title)) {
+                classes.push('is-small');
+                title = title.replace(/\b(small|half)\b/ig, '').trim();
+            }
 			const m = title.match(/\b(?:w|width)\s*=\s*(\d{1,3})(%|px)?\b/i);
 			if (m) {
 				const unit = m[2] || '%';
