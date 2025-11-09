@@ -281,10 +281,14 @@ body {
 .post-detail .content blockquote p { margin: 10px 0; }
 
 .vt-title { view-transition-name: post-title; }
+.vt-sub { view-transition-name: post-sub; }
+.vt-date { view-transition-name: post-date; }
 
 /* Reduce motion preferences */
 @media (prefers-reduced-motion: reduce) {
 	.vt-title { view-transition-name: none; }
+	.vt-sub { view-transition-name: none; }
+	.vt-date { view-transition-name: none; }
 	.brand-link.glitch,
 	.brand-link.glitch::before,
 	.brand-link.glitch::after { animation: none !important; opacity: 1; transform: none; }

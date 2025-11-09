@@ -11,6 +11,15 @@ const backLink = document.querySelector('#backLink');
 
 // Cache in browser localStorage (id -> HTML)
 
+function escapeHtml(s) {
+    return String(s)
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#39;');
+}
+
 function ensureDetailArticle(id, meta) {
 	let target = document.querySelector(`article.post-detail[data-post="${id}"]`);
 	if (target) return target;
@@ -23,9 +32,9 @@ function ensureDetailArticle(id, meta) {
 	target.hidden = true;
 	target.setAttribute('aria-hidden', 'true');
 
-	const header = meta.header;
-	const subheader = meta.subheader;
-	const date = meta.date;
+    const header = escapeHtml(meta.header);
+    const subheader = escapeHtml(meta.subheader);
+    const date = escapeHtml(meta.date);
 
 	target.innerHTML = `
         <h1 class="post-title">${header}</h1>
@@ -47,7 +56,12 @@ const hide = (el) => {
 };
 
 function clearVTTitles() {
-	document.querySelectorAll('.vt-title').forEach((el) => el.classList.remove('vt-title'));
+    // Backward-compatible: also clear new VT markers for subheader/date
+    document.querySelectorAll('.vt-title, .vt-sub, .vt-date').forEach((el) => {
+        el.classList.remove('vt-title');
+        el.classList.remove('vt-sub');
+        el.classList.remove('vt-date');
+    });
 }
 
 // Transform fetched HTML so that only the first two images keep `src`.
@@ -104,27 +118,35 @@ export function openPost(id, push, sourceLink, meta) {
 	// Update document title to the post title
 	document.title = meta?.header || document.title;
 
-	withVT(() => {
-		hide(listView);
-		hide(listHeading);
-		show(detailView);
-		backLink && show(backLink);
-		detailView.querySelectorAll('article.post-detail').forEach((el) => {
-			el.hidden = el !== target;
-		});
+    withVT(() => {
+        hide(listView);
+        hide(listHeading);
+        show(detailView);
+        backLink && show(backLink);
+        detailView.querySelectorAll('article.post-detail').forEach((el) => {
+            el.hidden = el !== target;
+        });
 
-		const newTitle = target.querySelector('.post-title');
-		newTitle.classList.add('vt-title');
-	}, {
-		before: () => {
-			const sourceTitle = sourceLink.querySelector('.post-title');
-			window.scrollTo(0, 0);
-			clearVTTitles();
-			sourceTitle.classList.add('vt-title');
-		}, after: () => {
-			clearVTTitles();
-		},
-	});
+        const newTitle = target.querySelector('.post-title');
+        newTitle.classList.add('vt-title');
+        const newSub = target.querySelector('.post-sub');
+        newSub && newSub.classList.add('vt-sub');
+        const newDate = target.querySelector('.post-meta time') || target.querySelector('.post-meta');
+        newDate && newDate.classList.add('vt-date');
+    }, {
+        before: () => {
+            const sourceTitle = sourceLink.querySelector('.post-title');
+            window.scrollTo(0, 0);
+            clearVTTitles();
+            sourceTitle.classList.add('vt-title');
+            const sourceSub = sourceLink.querySelector('.post-sub');
+            sourceSub && sourceSub.classList.add('vt-sub');
+            const sourceDate = sourceLink.querySelector('.post-date');
+            sourceDate && sourceDate.classList.add('vt-date');
+        }, after: () => {
+            clearVTTitles();
+        },
+    });
 
 	// If cached mutated HTML exists and the content is still placeholder, inject it now.
 	const content = target.querySelector('.content');
@@ -198,20 +220,28 @@ export function closePost(push) {
 	const listTitleEl = listLink ? listLink.querySelector('.post-title') : null;
 	const detailTitle = openDetail ? openDetail.querySelector('.post-title') : null;
 
-	withVT(
-		() => {
-			show(listView);
-			show(listHeading);
-			hide(detailView);
-			backLink && hide(backLink);
-			listTitleEl && listTitleEl.classList.add('vt-title');
-		},
-		{
-			before: () => {
-				clearVTTitles();
-				detailTitle && detailTitle.classList.add('vt-title');
-			},
-			after: () => clearVTTitles(),
-		}
-	);
+    withVT(
+        () => {
+            show(listView);
+            show(listHeading);
+            hide(detailView);
+            backLink && hide(backLink);
+            listTitleEl && listTitleEl.classList.add('vt-title');
+            const listSubEl = listLink ? listLink.querySelector('.post-sub') : null;
+            listSubEl && listSubEl.classList.add('vt-sub');
+            const listDateEl = listLink ? listLink.querySelector('.post-date') : null;
+            listDateEl && listDateEl.classList.add('vt-date');
+        },
+        {
+            before: () => {
+                clearVTTitles();
+                detailTitle && detailTitle.classList.add('vt-title');
+                const detailSub = openDetail ? openDetail.querySelector('.post-sub') : null;
+                detailSub && detailSub.classList.add('vt-sub');
+                const detailDate = openDetail ? (openDetail.querySelector('.post-meta time') || openDetail.querySelector('.post-meta')) : null;
+                detailDate && detailDate.classList.add('vt-date');
+            },
+            after: () => clearVTTitles(),
+        }
+    );
 };
