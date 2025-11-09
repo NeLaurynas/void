@@ -2,9 +2,33 @@
 // SPDX-License-Identifier: BSD-3-Clause
 
 import {closePost, openPost, preloadPost} from "./posts.js";
+import {suppressNextViewTransition} from "./viewTransition.js";
+
+function isIOS() {
+    const ua = navigator.userAgent || navigator.vendor || '';
+    const iOSDevice = /iP(hone|od|ad)/.test(navigator.platform || '');
+    const iPadOS13Plus = (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    const iOSInUA = /iOS|iPhone|iPad|iPod/i.test(ua);
+    return iOSDevice || iPadOS13Plus || iOSInUA;
+}
+
+function isAndroid() {
+    const ua = navigator.userAgent || navigator.vendor || '';
+    return /Android/i.test(ua);
+}
+
+function isMobileLike() {
+    return isIOS() || isAndroid();
+}
 import {getMetaFromLink} from "./postMeta.js";
 
-window.addEventListener('popstate', route);
+// When navigating via browser history (buttons or edge-swipe gestures),
+// skip our View Transitions to avoid clashing with the system gesture.
+window.addEventListener('popstate', () => {
+    // Limit suppression to mobile platforms (iOS/Android) where edge-swipe gestures occur
+    if (isMobileLike()) suppressNextViewTransition();
+    route();
+});
 
 export function route() {
 	const rawPath = location.pathname.slice(1);
