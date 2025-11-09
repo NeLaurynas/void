@@ -64,6 +64,18 @@ function clearVTTitles() {
     });
 }
 
+// Helper: current URL slug (supports "/slug" and "/year/slug")
+function currentSlug() {
+    try {
+        const path = (location.pathname || '').slice(1);
+        const parts = path.split('/');
+        const last = parts[parts.length - 1] || '';
+        return decodeURIComponent(last);
+    } catch {
+        return '';
+    }
+}
+
 // Transform fetched HTML so that only the first two images keep `src`.
 function deferImagesInHtml(html, keep = 2) {
 	try {
@@ -164,13 +176,14 @@ export function preloadPost(id, meta) {
 	const content = target.querySelector('.content');
 
 	// Load from cache immediately if present
-	const cached = localStorage.getItem(id);
-	if (cached !== null) {
-		if (content.querySelector('[data-not-loaded]')) content.innerHTML = cached;
-		// If already open, load deferred images now
-		if (!target.hidden) activateDeferredImages(target);
-		return;
-	}
+    const cached = localStorage.getItem(id);
+    if (cached !== null) {
+        if (content.querySelector('[data-not-loaded]')) content.innerHTML = cached;
+        // If this post is currently open or matches the current URL, activate images now
+        const isActiveRoute = currentSlug() === id;
+        if (!target.hidden || isActiveRoute) activateDeferredImages(target);
+        return;
+    }
 
 	// Avoid duplicate fetches
 	if (content.hasAttribute('data-loading')) return;
@@ -183,29 +196,30 @@ export function preloadPost(id, meta) {
 		return;
 	}
 	const url = `/${year}/${id}.html`;
-	fetch(url)
-		.then((r) => {
-			if (!r.ok) throw new Error(`Failed to load post ${id}`);
-			return r.text();
-		})
-		.then((html) => {
-			// Replace img src with data-src for all but the first two
-			const mutated = deferImagesInHtml(html, 2);
-			localStorage.setItem(id, mutated);
-			content.innerHTML = mutated;
-			// If the post is currently open, immediately load deferred images
-			if (!target.hidden) activateDeferredImages(target);
-		})
-		.catch(() => {
-			const current = decodeURIComponent((location.pathname || '').slice(1));
-			if (current === id) {
-				history.replaceState({}, '', '/');
-				closePost(false);
-			}
-		})
-		.finally(() => {
-			content.removeAttribute('data-loading');
-		});
+    fetch(url)
+        .then((r) => {
+            if (!r.ok) throw new Error(`Failed to load post ${id}`);
+            return r.text();
+        })
+        .then((html) => {
+            // Replace img src with data-src for all but the first two
+            const mutated = deferImagesInHtml(html, 2);
+            localStorage.setItem(id, mutated);
+            content.innerHTML = mutated;
+            // If the post is currently open or matches current URL, load deferred images
+            const isActiveRoute = currentSlug() === id;
+            if (!target.hidden || isActiveRoute) activateDeferredImages(target);
+        })
+        .catch(() => {
+            const current = decodeURIComponent((location.pathname || '').slice(1));
+            if (current === id) {
+                history.replaceState({}, '', '/');
+                closePost(false);
+            }
+        })
+        .finally(() => {
+            content.removeAttribute('data-loading');
+        });
 }
 
 export function closePost(push) {
