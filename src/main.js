@@ -6,6 +6,7 @@ import {glitchLoop} from "./glitch.js";
 import {applyTheme} from "./theme.js";
 import {closePost, openPost, preloadPost} from "./posts.js";
 import {getMetaFromLink} from "./postMeta.js";
+import {markInitialLoadComplete} from "./viewTransition.js";
 
 const homeLink = document.querySelector('#homeLink');
 const listView = document.querySelector('#list-view');
@@ -57,6 +58,8 @@ function init() {
 	glitchLoop();
 	applyTheme();
 	route();
+	// Avoid animating the initial render (cold open)
+	markInitialLoadComplete();
 	adjustHeaderOffset();
 	window.addEventListener('resize', adjustHeaderOffset);
 
