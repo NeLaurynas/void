@@ -6,7 +6,7 @@ tags: blog,ChatGPT
 
 Kyla noras kaišioti savo mintis kitiems, idealiausia būtų [video forma](https://www.youtube.com/@killmeh2), bet nėra laiko. Ir pardaviau visą audio-video įrangą.
 
-Fun fact - prieš dedant skelbimus pasižiūrėjau į panašius, kad įvertinčiau kainas - ir labai, labai daug kamerų, mikrofonų, trikojų ir pan. pirktų tuo pačiu metu kaip mano - 2025 balandį - birželį. Ne aš vienas sugalvojau per covid naują hobį, heh.
+Fun fact - prieš dedant skelbimus pasižiūrėjau į panašius, kad įvertinčiau kainas - ir labai, labai daug kamerų, mikrofonų, trikojų ir pan. pirktų tuo pačiu metu kaip mano - 2020 balandį - birželį. Ne aš vienas sugalvojau per covid naują hobį, heh.
 
 Fun fact № 2 - kaip ir kiekvieno hobio pradžioje reikėjo visko - trikojų, objektyvų, kamerų, mikrofonų ir t.t. Dabar realiai reikia apšvietimo, galbūt mikrofono ir iPhone (fun fact № 3 - iPhone 17 kurį laiką buvo [greičiausias consumer grade CPU in single core performance](https://www.tomshardware.com/pc-components/cpus/apples-a19-becomes-the-fastest-single-core-cpu-in-the-world-on-passmark-beating-pc-chips-and-apples-own-m3-ultra-passively-cooled-iphone-17-chip-catapults-past-power-hungry-competitors) - greičiau už x86 čempioną Intel Core Ultra 9 285K - *I fucking can't even*...) - ir kokybiškai galima viską nufilmuoti.
 
