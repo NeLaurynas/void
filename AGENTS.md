@@ -68,3 +68,7 @@ The instructions in this file apply to the entire repository.
 - Preserve the current client-side routing and caching approach; if changing routes or storage keys, update both the router and posts modules coherently.
 - Do not add large new dependencies unless absolutely necessary; the project is intentionally lightweight.
 
+- Theme & typography:
+  - Default theme should follow `prefers-color-scheme` when no explicit user choice is stored; do not silently default to dark.
+  - Bold text in post content should be pure black in light mode and pure white in dark mode.
+  - Code block backgrounds should be slightly lighter than the page in light mode and slightly darker in dark mode, by adjusting `--code-bg` / `--code-inline-bg` tokens rather than per-element colors.

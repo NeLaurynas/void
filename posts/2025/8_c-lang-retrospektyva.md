@@ -1,7 +1,7 @@
 slug: c-lang-retrospektyva
 header: C lang - retrospektyva
 subheader: I C despair
-date: 2025-12-01
+date: draft
 tags: clang,programming
 
 Pasirinkau C mikrokontroleriams nes tai buvo *least common denominator* (toolchain in C, sdk in C, dauguma bibliotekų ir datasheets kodo pvz. - in C), plius paprasta - jokių klasių, mažai raktažodžių, mažai sintaksinio cukraus. Padirbus metus - pradedu gailėtis savo pasirinkimo. C problema - amžius ir nenoras keistis (kartais). Sukurta **1972** metais.
@@ -66,6 +66,10 @@ Visų jų realus ilgis yra 3. `A` ir `c` tiesiog turi "123\0". Null termination.
 API grąžina 32 simbolių duomenis - gali dėti į c[32] be null termination, gali dėti į c[33] su null termination. O vėliau - tavo problemos.
 
 Iš kur staiga toks laikymas už rankutės (bet optional)? The fuck is this? Kad visokios `strcpy` `strlen` funkcijos nereikalautų ilgio parametro?
+
+### type system
+
+Kokia dar tipų sistema? Tipų sistema tiesiog yra *hints* compileriui kiek atminties rezervuoti kintamajam, o paskui - `void*` all the things (čia yra C generics btw /s). Reali problema, nes type system neegzistuoja: Pico
 
 ### array decay
 
