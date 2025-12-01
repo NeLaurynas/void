@@ -12,8 +12,8 @@
     /* Typography scale */
     --font-boost: 1.05;
     /* Code blocks */
-    --code-bg: #e9edf3;        /* slightly darker light code bg */
-    --code-inline-bg: #eef1f5; /* light inline code background */
+    --code-bg: #ffffff;        /* lighter code bg on light */
+    --code-inline-bg: #f3f4f6; /* light inline code background */
 }
 
 html[data-theme="dark"] {
@@ -27,8 +27,8 @@ html[data-theme="dark"] {
     --emphasis: #f59e0b;   /* lighter orange on dark */
     --quote-line: #313741; /* slightly stronger than border (dark) */
     /* Code blocks */
-    --code-bg: #182330;        /* slightly lighter dark code bg */
-    --code-inline-bg: #182330; /* subtle chip for inline */
+    --code-bg: #05070c;        /* darker code bg on dark */
+    --code-inline-bg: #05070c; /* subtle chip for inline */
 }
 
 /* Resets */
@@ -250,6 +250,12 @@ body {
 
 .post-detail .content em,
 .post-detail .content i { color: var(--emphasis); }
+
+.post-detail .content strong,
+.post-detail .content b { color: #000000; }
+
+html[data-theme="dark"] .post-detail .content strong,
+html[data-theme="dark"] .post-detail .content b { color: #ffffff; }
 
 .post-detail .content img,
 .post-detail .content iframe { width: 100%; height: auto; display: block; margin: 24px auto; }

@@ -34,6 +34,31 @@ async function main() {
   for (const a of assets) {
     if (await copyIfExists(a.src, a.dst)) copied++;
   }
+
+  // Try to copy highlight.js themes from node_modules if installed.
+  const stylesRoot = path.join(root, 'node_modules', 'highlight.js', 'styles');
+  const highlightStyles = [
+    {name: 'atom-one-light', out: 'highlight-atom-one-light.css'},
+    {name: 'atom-one-dark', out: 'highlight-atom-one-dark.css'},
+  ];
+  for (const style of highlightStyles) {
+    const dest = path.join(dist, style.out);
+    const candidates = [
+      path.join(stylesRoot, `${style.name}.min.css`),
+      path.join(stylesRoot, `${style.name}.css`),
+    ];
+    let ok = false;
+    for (const src of candidates) {
+      if (await copyIfExists(src, dest)) {
+        copied++;
+        ok = true;
+        break;
+      }
+    }
+    // If neither file exists, skip silently (user may not have installed highlight.js yet).
+    if (!ok) continue;
+  }
+
   console.log(`[build] Copied ${copied} asset(s) to dist`);
 }
 
