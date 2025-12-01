@@ -7,10 +7,12 @@ import hljs from "highlight.js/lib/core";
 import cLang from "highlight.js/lib/languages/c";
 import rust from "highlight.js/lib/languages/rust";
 import cpp from "highlight.js/lib/languages/cpp";
+import csharp from "highlight.js/lib/languages/csharp";
 
 hljs.registerLanguage("c", cLang);
 hljs.registerLanguage("rust", rust);
 hljs.registerLanguage("cpp", cpp);
+hljs.registerLanguage("csharp", csharp);
 
 const detailView = document.querySelector('#detail-view');
 const listView = document.querySelector('#list-view');
