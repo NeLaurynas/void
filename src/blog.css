@@ -257,6 +257,13 @@ body {
 html[data-theme="dark"] .post-detail .content strong,
 html[data-theme="dark"] .post-detail .content b { color: #ffffff; }
 
+.post-detail .content em strong,
+.post-detail .content em b,
+.post-detail .content i strong,
+.post-detail .content i b {
+    color: var(--emphasis) !important;
+}
+
 .post-detail .content img,
 .post-detail .content iframe { width: 100%; height: auto; display: block; margin: 24px auto; }
 .post-detail .content iframe { aspect-ratio: 16 / 9; }
