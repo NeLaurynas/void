@@ -191,10 +191,10 @@ async function main() {
 			let classes = [];
 			let widthStyle = '';
 
-            if (/\b(small|half)\b/i.test(title)) {
-                classes.push('is-small');
-                title = title.replace(/\b(small|half)\b/ig, '').trim();
-            }
+			if (/\b(small|half)\b/i.test(title)) {
+				classes.push('is-small');
+				title = title.replace(/\b(small|half)\b/ig, '').trim();
+			}
 			const m = title.match(/\b(?:w|width)\s*=\s*(\d{1,3})(%|px)?\b/i);
 			if (m) {
 				const unit = m[2] || '%';
@@ -211,6 +211,28 @@ async function main() {
 				const titleAttr = alt ? ` title=\"${escape(alt)}\"` : '';
 				return `<iframe src=\"${escape(yt)}\"${classAttr}${styleAttr}${titleAttr} frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" allowfullscreen></iframe>`;
 			}
+
+				// WebM video via image syntax: ![](images/clip.webm "small")
+				const isWebm = /\.webm$/i.test(String(src).split('?')[0] || '');
+				if (isWebm) {
+					// Video behavior hints in the title (in addition to sizing hints):
+					//  - "noautoplay" / "manual" => remove autoplay (and default to controls)
+					//  - "controls" => show controls
+					const wantsControls = /\bcontrols\b/i.test(title);
+					const disableAutoplay = /\b(noautoplay|manual)\b/i.test(title);
+					// Strip behavior hints from title before emitting it as an attribute
+					title = title
+						.replace(/\bcontrols\b/ig, '')
+						.replace(/\b(noautoplay|manual)\b/ig, '')
+						.replace(/\bautoplay\b/ig, '')
+						.trim();
+
+					const controlsAttr = (wantsControls || disableAutoplay) ? ' controls' : '';
+					const autoplayAttr = disableAutoplay ? '' : ' autoplay';
+					const titleAttr = title ? ` title=\"${escape(title)}\"` : '';
+					const ariaAttr = alt ? ` aria-label=\"${escape(alt)}\"` : '';
+					return `<video src=\"${escape(src)}\"${classAttr}${styleAttr}${titleAttr}${ariaAttr}${autoplayAttr} loop muted playsinline${controlsAttr}></video>`;
+				}
 
 			// Default: regular image
 			const titleAttr = title ? ` title=\"${escape(title)}\"` : '';
@@ -281,7 +303,7 @@ async function main() {
 	await fs.writeFile(postsJsonPath, JSON.stringify({posts}, null, 2), 'utf8');
 
 	console.log(`Built ${posts.length} post entries -> ${path.relative(root, postsJsonPath)}`);
-	console.log(`Copied ${totalImagesCopied} image(s) to dist/images/<year>`);
+	console.log(`Copied ${totalImagesCopied} media file(s) to dist/images/<year>`);
 }
 
 main().catch((err) => {

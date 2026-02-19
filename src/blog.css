@@ -265,18 +265,22 @@ html[data-theme="dark"] .post-detail .content b { color: #ffffff; }
 }
 
 .post-detail .content img,
-.post-detail .content iframe { width: 100%; height: auto; display: block; margin: 24px auto; }
+.post-detail .content iframe,
+.post-detail .content video { width: 100%; height: auto; display: block; margin: 24px auto; }
 .post-detail .content iframe { aspect-ratio: 16 / 9; }
 .post-detail .content img.is-small,
-.post-detail .content iframe.is-small { width: 50%; }
+.post-detail .content iframe.is-small,
+.post-detail .content video.is-small { width: 50%; }
 /* On mobile, small/half media should take full width */
 @media (max-width: 768px) {
     .post-detail .content img.is-small,
-    .post-detail .content iframe.is-small { width: 100%; }
+    .post-detail .content iframe.is-small,
+    .post-detail .content video.is-small { width: 100%; }
 }
 .post-detail .content figure { margin: 24px 0; }
 .post-detail .content figure > img,
-.post-detail .content figure > iframe { margin: 0 auto; }
+.post-detail .content figure > iframe,
+.post-detail .content figure > video { margin: 0 auto; }
 .post-detail .content figure > figcaption {
     text-align: center;
     margin-top: 6px;

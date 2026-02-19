@@ -3,33 +3,53 @@ set -e
 set -u
 set -o pipefail
 
+# --- gather inputs (PNG/JPG/GIF in current dir) ---
+# enable case-insensitive globbing only for this expansion
+setopt nocaseglob
+FILES=( *.(png|jpg|jpeg|gif|webp|mov)(N) )  # (N) = nullglob
+unsetopt nocaseglob
+
+if (( ${#FILES} == 0 )); then
+  print "No PNG/JPG/GIF/WEBP/MOV files found in the current directory."
+  exit 0
+fi
+
+# Determine which tools we actually need
+HAS_MOV=0
+HAS_IMAGES=0
+for f in "${FILES[@]}"; do
+  case "${f:l}" in
+    (*.mov) HAS_MOV=1 ;;
+    (*.png|*.jpg|*.jpeg|*.gif|*.webp) HAS_IMAGES=1 ;;
+  esac
+done
+
 # --- sanity checks ---
 if ! command -v avifenc >/dev/null 2>&1; then
   print -u2 "Error: avifenc not found. On macOS: brew install libavif"
   exit 1
 fi
 
-# We need ImageMagick for resizing / GIF handling
-if command -v magick >/dev/null 2>&1; then
-  IM_CONVERT=(magick convert)
-  IM_IDENTIFY=(magick identify)
-elif command -v convert >/dev/null 2>&1; then
-  IM_CONVERT=(convert)
-  IM_IDENTIFY=(identify)
-else
-  print -u2 "Error: ImageMagick not found. On macOS: brew install imagemagick"
-  exit 1
+# If we have any MOVs, ensure ffmpeg exists (used to strip audio + feed y4m to avifenc).
+if (( HAS_MOV )); then
+  if ! command -v ffmpeg >/dev/null 2>&1; then
+    print -u2 "Error: ffmpeg not found. On macOS: brew install ffmpeg"
+    exit 1
+  fi
 fi
 
-# --- gather inputs (PNG/JPG/GIF in current dir) ---
-# enable case-insensitive globbing only for this expansion
-setopt nocaseglob
-FILES=( *.(png|jpg|jpeg|gif)(N) )  # (N) = nullglob
-unsetopt nocaseglob
-
-if (( ${#FILES} == 0 )); then
-  print "No PNG/JPG/GIF images found in the current directory."
-  exit 0
+# We need ImageMagick for resizing / GIF handling (only if images are present)
+if (( HAS_IMAGES )); then
+  if command -v magick >/dev/null 2>&1; then
+    IM_CONVERT=(magick convert)
+    IM_IDENTIFY=(magick identify)
+  elif command -v convert >/dev/null 2>&1; then
+    IM_CONVERT=(convert)
+    IM_IDENTIFY=(identify)
+  else
+    print -u2 "Error: ImageMagick not found. On macOS: brew install imagemagick"
+    exit 1
+  fi
 fi
 
 # --- prepare output dir ---
@@ -46,8 +66,8 @@ encode_still() {
   local tmp="$TMPDIR/${stem}.png"
   # Resize only if >2000px on any side
   "${IM_CONVERT[@]}" "$input" -resize '2000x2000>' "$tmp"
-  print "Encoding \"$input\" → \"$out\" (q=75, speed=3, yuv=444)"
-  avifenc -q 75 --speed 3 --yuv 444 "$tmp" "$out"
+  print "Encoding \"$input\" → \"$out\" (q=70, speed=3, yuv=444)"
+  avifenc -q 70 --speed 3 --yuv 444 "$tmp" "$out"
 }
 
 encode_gif() {
@@ -95,23 +115,43 @@ encode_gif() {
     (( idx++ ))
   done
 
-  print "Encoding animated \"$input\" → \"$out\" (q=75, speed=3, yuv=444, frames=${#frames})"
+  print "Encoding animated \"$input\" → \"$out\" (q=70, speed=3, yuv=444, frames=${#frames})"
   avifenc -q 70 --speed 3 --yuv 444 "${enc_args[@]}" -o "$out"
+}
+
+encode_mov() {
+  local input="$1" stem="$2" out="$3"
+
+  # Encode MOV to WebM (VP9), drop audio track (-an).
+  # Resize only if >2000px on any side (keep aspect ratio).
+  local vf="scale='min(2000,iw)':'min(2000,ih)':force_original_aspect_ratio=decrease"
+
+  # VP9 CRF: lower = higher quality / larger. Tune as desired.
+  local crf=32
+
+  print "Encoding \"$input\" → \"$out\" (vp9 crf=$crf, audio=off)"
+  ffmpeg -hide_banner -loglevel error \
+    -i "$input" \
+    -an -sn -map 0:v:0 \
+    -vf "$vf" \
+    -c:v libvpx-vp9 -crf "$crf" -b:v 0 \
+    -pix_fmt yuv420p \
+    "$out"
 }
 
 # --- process each image ---
 for INPUT in "${FILES[@]}"; do
   base="${INPUT:t}"            # tail (filename)
   stem="${base%.*}"
-  out="$OUTDIR/${stem}.avif"
   ext_l="${base##*.}"
   ext_l="${ext_l:l}"           # lowercase extension
 
   case "$ext_l" in
-    gif)           encode_gif  "$INPUT" "$stem" "$out" ;;
-    png|jpg|jpeg)  encode_still "$INPUT" "$stem" "$out" ;;
+    gif)                 encode_gif  "$INPUT" "$stem" "$OUTDIR/${stem}.avif" ;;
+    png|jpg|jpeg|webp)   encode_still "$INPUT" "$stem" "$OUTDIR/${stem}.avif" ;;
+    mov)                 encode_mov  "$INPUT" "$stem" "$OUTDIR/${stem}.webm" ;;
     *)             print "Skipping unsupported file: $INPUT" ;;
   esac
 done
 
-print "Done. AVIF files are in ./${OUTDIR}"
+print "Done. Outputs are in ./${OUTDIR} (.avif images, .webm videos)"

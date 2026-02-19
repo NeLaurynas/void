@@ -71,6 +71,23 @@ Notes:
 - Alt text is used for figcaptions; leave it empty if you don’t want a caption.
 - All images are centered in the article; default width is 100%.
 
+## WebM Videos (image-like)
+
+You can embed a local `.webm` using the same Markdown image syntax, and the builder will render a `<video>` tag with:
+- `autoplay loop muted playsinline`
+- the same sizing hints as images (`"small"`, `"w=NN%"`, `"width=NNpx"`)
+- the same figure/caption behavior (alt text becomes `<figcaption>` when implicit figures apply)
+
+Autoplay control:
+- Default is `autoplay`.
+- Add `"noautoplay"` (or `"manual"`) to disable autoplay (this also enables `controls`).
+- Add `"controls"` to show controls (with or without autoplay).
+
+Examples:
+- `![fkn windos](images/fkn_win_arrows.webm "small")`
+- `![manual play](images/demo.webm "small noautoplay")`
+- `![](images/demo.webm "w=60%")`
+
 ## YouTube Embeds (image-like)
 
 You can embed a YouTube video using the same Markdown image syntax, and the builder will render a responsive `<iframe>` with the same sizing rules and figure caption behavior:
