@@ -1,74 +1,74 @@
 # AGENT INSTRUCTIONS – VOID Blog
 
-This repo is a small static blog engine plus client-side app built around Markdown posts, a Bun-based build pipeline, and a single-page style reader.
+This repo is a lightweight static blog generator + a small client-side “single-page reader”. Posts are Markdown files under `posts/`, rendered at build time into `dist/`, then loaded/cached in the browser.
 
-The instructions in this file apply to the entire repository.
+These instructions apply to the entire repository.
 
-## High-level Architecture
+## Repo Layout (source of truth)
 
-- **Posts + assets**
-  - Posts live under `posts/<YEAR>/*.md`.
-  - Images for a given year live in `posts/<YEAR>/images/` and are referenced from Markdown as `images/<name>.<ext>`.
-  - Each post starts with a simple `key: value` metadata block, then a blank line, then Markdown content.
-  - The builder strips metadata, renders Markdown to HTML (markdown-it + implicit figures), and handles image copy/rewrites and size hints.
+- `posts/<YEAR>/*.md`: Markdown posts.
+- `posts/<YEAR>/images/*`: Per-year media (images + `.webm`); referenced from Markdown as `images/<name>.<ext>`.
+- `scripts/*.js`: Build + dev scripts (run via Bun).
+- `src/*`: Client app + HTML/CSS template.
+- `dist/*`: Build output (generated; don’t hand-edit).
 
-- **Build-time (Bun)**
-  - `scripts/build-posts.js`
-    - Scans `posts/<YEAR>/*.md`.
-    - Parses metadata: `slug`, `header`, `subheader`, `date`, `tags`.
-    - Renders Markdown to HTML.
-    - Rewrites image paths `images/...` → `/images/<YEAR>/...` and copies source files to `dist/images/<YEAR>/`.
-    - Interprets size hints in image titles: `small`/`half` (50%), `w=NN%`, `width=NNpx`.
-    - Outputs per-post HTML files: `dist/<YEAR>/<slug>.html` and manifest `dist/posts.json`.
-  - `scripts/copy-html.js`
-    - Copies `src/blog.html` to `dist/blog.html`.
-    - When `dist/posts.json` exists, injects the list view markup (links with `data-post` slugs).
-  - `scripts/copy-assets.js`
-    - Copies any static assets (e.g., favicons, misc files) into `dist` (see the script for exact behavior).
-  - Bundling (`bun run build`)
-    - Bundles `src/main.js` to `dist/bundle.js`.
-    - Minifies `src/blog.css` to `dist/blog.css`.
-    - Runs `build-posts`, `copy-html`, and `copy-assets` in sequence via the `build` script.
+## Build Pipeline (Bun)
 
-- **Runtime (client)**
-  - `src/main.js`
-    - Handles app bootstrapping, theme setup, router wiring, list/detail transitions, and hover/focus preloading of posts.
-    - Manages `localStorage` caching of post HTML; clears caches every 24h (and fully clears on localhost).
-  - `src/router.js`
-    - Client-side routing and canonicalization between `/slug` and `/YEAR/slug`.
-    - Validates slugs against the manifest and redirects unknown routes to `/`.
-  - `src/posts.js`
-    - `preloadPost(id, meta)` loads HTML (from cache or `/YEAR/<slug>.html`) and stores in `localStorage`.
-    - `openPost(id, push, link, meta)` performs list→detail transitions (View Transitions when available) and pushes canonical URLs.
-    - `closePost(push)` transitions back to the list and updates history.
-  - `src/theme.js`, `src/viewTransition.js`
-    - Implement theme switching with View Transitions (with a CSS fallback).
-  - `src/blog.css`
-    - Defines layout, typography, light/dark design tokens, transitions, centered images, figure captions, and “small/half” sizing behavior.
+Core build command: `bun run build` (cleans `dist/` first).
 
-## Commands and Tooling
+- `scripts/clean-dist.js`: deletes + recreates `dist/`.
+- `scripts/build-posts.js`:
+  - Scans `posts/<YEAR>/*.md`.
+  - Parses the simple metadata header (until first blank line): `slug`, `header`, `subheader`, `date`, `tags`.
+  - Skips drafts (`date: draft`).
+  - Renders Markdown to HTML (markdown-it + implicit figures; raw HTML in Markdown is disabled).
+  - Copies `posts/<YEAR>/images/*` to `dist/images/<YEAR>/` and rewrites `images/...` → `/images/<YEAR>/...`.
+  - Outputs: `dist/<YEAR>/<slug>.html` (HTML fragment) and `dist/posts.json` (manifest for the list).
+  - Media extras via image syntax:
+    - YouTube URLs render as `<iframe>` (supports `watch`, `youtu.be`, `shorts`, start times via `t`/`start`).
+    - Local `.webm` renders as `<video autoplay loop muted playsinline>` with title hints for `controls` / `noautoplay` (`manual`).
+  - Size hints in the image title apply to `<img>`, `<iframe>`, and `<video>`:
+    - `small` / `half` → adds `.is-small` (50% width on desktop; full width on mobile).
+    - `w=NN%`, `width=NN%`, `w=NNpx`, `width=NNpx` → inline `style="width:..."`.
+  - Links open in new tabs (`target="_blank" rel="noopener"`). Images are wrapped in a self-link (unless already linked) so they can be opened full-size.
+- `scripts/copy-html.js`: copies `src/blog.html` → `dist/blog.html`, injecting the list markup from `dist/posts.json`.
+- `scripts/copy-assets.js`: copies `src/favicon.svg`, `src/robots.txt`, and highlight.js theme CSS files into `dist/` (when available in `node_modules`).
+- `scripts/dev.js` (`bun run dev`):
+  - Runs Bun bundler in `--watch` mode for JS/CSS.
+  - Rewrites `src/blog.html` → `dist/blog.html` (with list injection) and adds live reload via `EventSource` at `/__livereload`.
+  - Serves `dist/` and falls back to `dist/blog.html` for SPA routes.
 
-- Runtime: Bun (`"packageManager": "bun@1.1.30"`, requires Bun ≥ 1.1.0).
-- Key scripts (from `package.json`):
-  - `bun run build:js` → bundle `src/main.js` to `dist/bundle.js`.
-  - `bun run build:css` → minify `src/blog.css` to `dist/blog.css`.
-  - `bun run build:posts` → generate `dist/<YEAR>/<slug>.html` and `dist/posts.json`.
-  - `bun run build:html` → copy/inject `src/blog.html` into `dist/blog.html`.
-  - `bun run build:assets` → copy static assets via `scripts/copy-assets.js`.
-  - `bun run build` → full production build (js, css, posts, html, assets).
-  - `bun run dev` → development workflow / dev server (see `scripts/dev.js` for details).
-  - `bun run new` → interactive helper to scaffold new posts (`posts/<YEAR>/<index>_<slug>.md`).
-  - `bun run copyright` → runs `scripts/copyright.cjs`.
+## Post Format (Markdown)
 
-## Conventions for Future Changes
+Each post starts with `key: value` lines, then a blank line, then Markdown:
 
-- Prefer using the `bun run new` helper to create posts and maintain consistent metadata + filenames.
-- Keep build-time scripts (`scripts/*.js`) side-effect free except for expected filesystem operations under `dist/` and `posts/`.
-- Avoid introducing additional build systems or bundlers; integrate new behavior into the existing Bun-based pipeline.
-- Preserve the current client-side routing and caching approach; if changing routes or storage keys, update both the router and posts modules coherently.
-- Do not add large new dependencies unless absolutely necessary; the project is intentionally lightweight.
+- Required: `slug`, `header`, `date`
+- Optional: `subheader`, `tags` (comma-separated)
+- Drafts: set `date: draft` to keep the post unpublished.
 
+Important invariants:
+
+- Slugs must be globally unique across all years (the client uses `data-post="<slug>"` and `localStorage[slug]`).
+- The year used by the client is derived from the displayed `date` (`YYYY-MM-DD`), so `posts/<YEAR>/...` should match `date`’s year.
+
+## Runtime App (client)
+
+- `src/main.js`: bootstraps, theme, routing, list interactions (hover/focus preloads; plain left-click opens; modifiers use browser defaults).
+- `src/router.js`: handles `/slug` and `/YEAR/slug`; unknown slugs route back to `/`. On iOS/Android history navigation, suppresses View Transitions to avoid gesture conflicts.
+- `src/posts.js`:
+  - Fetches post HTML from `/<year>/<slug>.html` and caches it in `localStorage` under the slug key.
+  - Defers loading images beyond the first two (`img[src]` → `img[data-src]`) until the post is opened.
+  - Syntax highlighting via highlight.js (registered: C, C++, C#, Rust).
+- Cache housekeeping: `src/main.js` clears post caches every 48 hours; on localhost it clears all `localStorage` on load.
+- Theme: `src/theme.js` follows `prefers-color-scheme` when unset; also swaps highlight.js theme CSS (`highlight-atom-one-{light,dark}.css`).
+
+## Change Conventions / Gotchas
+
+- Prefer `bun run new` to scaffold posts with consistent filenames + draft metadata.
+- Don’t edit `dist/` by hand; it’s rebuilt (and `bun run build` deletes it).
+- If you change routing, storage keys, or canonical URL rules, update `src/router.js`, `src/posts.js`, and any list injection logic together.
+- Keep existing formatting per-file; avoid drive-by refactors.
 - Theme & typography:
-  - Default theme should follow `prefers-color-scheme` when no explicit user choice is stored; do not silently default to dark.
+  - Default theme should follow `prefers-color-scheme` when no explicit choice is stored; do not silently default to dark.
   - Bold text in post content should be pure black in light mode and pure white in dark mode.
-  - Code block backgrounds should be slightly lighter than the page in light mode and slightly darker in dark mode, by adjusting `--code-bg` / `--code-inline-bg` tokens rather than per-element colors.
+  - Code block backgrounds should be adjusted via `--code-bg` / `--code-inline-bg` tokens (not per-element hardcoding).
