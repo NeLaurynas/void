@@ -13,14 +13,14 @@ const listView = document.querySelector('#list-view');
 const headerEl = document.querySelector('.site-header');
 const backLink = document.querySelector('#backLink');
 
-// Cache housekeeping: keep theme, drop post caches after 24h
+// Cache housekeeping: keep theme, drop post caches after 48h
 const CACHE_EPOCH_KEY = 'postsCacheCreatedAt';
 
 function cleanExpiredPostCache() {
 	const now = Date.now();
 	const ts = Number(localStorage.getItem(CACHE_EPOCH_KEY) || 0);
-	const ONE_DAY = 24 * 60 * 60 * 1000;
-	if (!ts || now - ts > ONE_DAY) {
+	const TWO_DAYS = 48 * 60 * 60 * 1000;
+	if (!ts || now - ts > TWO_DAYS) {
 		const keep = new Set(['theme', CACHE_EPOCH_KEY]);
 		const toDelete = [];
 		for (let i = 0; i < localStorage.length; i++) {

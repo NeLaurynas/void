@@ -121,7 +121,7 @@ Build-time
 
 Runtime (client)
 - src/main.js
-  - Housekeeping: clears post HTML caches in `localStorage` every 24h (keeps theme).
+  - Housekeeping: clears post HTML caches in `localStorage` every 48h (keeps theme).
   - Localhost: when served from `localhost`/`127.0.0.1`/`::1`, clears all `localStorage` on load regardless of TTL.
   - Initializes theme, router, header sizing, glitch effect, and list event handlers (hover/focus preload; opens on plain left mousedown; ctrl/cmd/middle-click use browser default; right-click ignored).
   - Preload behavior: hovering or focusing a post link preloads its HTML into `localStorage` so clicking opens instantly.
