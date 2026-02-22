@@ -273,6 +273,9 @@ html[data-theme="dark"] .post-detail .content b { color: #ffffff; }
 .post-detail .content video.is-small { width: 50%; }
 /* On mobile, small/half media should take full width */
 @media (max-width: 768px) {
+    .post-detail .post-title { font-size: 1.9rem; }
+    .post-detail .content { font-size: 0.95rem; }
+
     .post-detail .content img.is-small,
     .post-detail .content iframe.is-small,
     .post-detail .content video.is-small { width: 100%; }
