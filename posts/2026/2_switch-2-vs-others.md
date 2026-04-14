@@ -1,5 +1,5 @@
 slug: switch-2-vs-others
-header: Switch 2 vs kiti
+header: Switch 2 prieš pasaulį
 subheader: nintendos vs oranges - palyginkime nepalyginama
 date: 2026-04-14
 tags: video games,switch,consoles
