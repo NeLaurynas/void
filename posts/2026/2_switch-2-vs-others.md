@@ -1,4 +1,4 @@
-slug: switch-2-vs-others
+slug: switch-2-vs-the-world
 header: Switch 2 prieš pasaulį
 subheader: nintendos vs oranges - palyginkime nepalyginama
 date: 2026-04-14
