@@ -131,6 +131,7 @@ async function main() {
 
 		// Prepare markdown renderer for this year
 		const md = new MarkdownIt({html: false, linkify: true, typographer: false});
+		md.linkify.set({fuzzyLink: false});
 		md.use(implicitFigures, {figcaption: true});
 		// Ensure links open in a new tab from generated HTML
 		md.renderer.rules.link_open = (tokens, i, options, env, self) => {
