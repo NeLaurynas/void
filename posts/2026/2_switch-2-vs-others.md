@@ -33,9 +33,9 @@ Taigi, "Windows yra Porsche". Vienintelė diskusija čia - ar Windows išvis dat
 1. įsijungi žaidimą - compiling shaders
 1. valandėlė keičiant grafikos nustatymus, galbūt pasižiūrint kokį "optimized settings guide" youtūbėj, vis patikrinant su FPS counter, ar jau yra pakankamai FPS
 
-> LUXURY, PORSCHE WORTHY, EXPERIENCE - PC degradas fanas
+> LUXURY, PORSCHE WORTHY, EXPERIENCE - PC fanas
 
-Nekaltam lūzeriui geimeriui, kuris visą gyvenimą yra engiamas ir jo didžiausias rūpestis yra [Gamergate](https://en.wikipedia.org/wiki/Gamergate), galbūt tai yra *acceptable experience*, bet man, dabar svarstančiam, ką pasirinkti prie viskio leidžiant vakarą sodyboje - cigarą ar pypkę – tai pyzdų tokį gyvenimą. Negalėčiau taip gyventi, jokios hiperbolės.
+Nekaltam geimeriui, kuris visą gyvenimą yra engiamas ir jo didžiausias rūpestis yra [Gamergate](https://en.wikipedia.org/wiki/Gamergate), galbūt tai yra *acceptable experience*, bet man, dabar svarstančiam, ką pasirinkti prie viskio leidžiant vakarą sodyboje - cigarą ar pypkę – tai pyzdų tokį gyvenimą. Negalėčiau taip gyventi, jokios hiperbolės.
 
 ## Seno žaidimo experience
 
@@ -60,7 +60,7 @@ Kažkas pasidžiaugė, kad žaidžia [Wind Waker](https://en.wikipedia.org/wiki/
 
 Pasižiūri į laikrodį - praėjo valanda. Valanda droninimo prie PC, failų managinimo, dokumentacijos skaitymo ir checkboxų spaudaliojimo. 0 sekundžių žaidimo. Valanda išvaistyta. 0 žaidimo laiko.
 
-> LUXURY, PORSCHE WORTHY, EXPERIENCE - kitas PC degradas fanas
+> LUXURY, PORSCHE WORTHY, EXPERIENCE - kitas PC fanas
 
 ## Tai PC nėra Porsche
 
