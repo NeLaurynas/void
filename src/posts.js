@@ -86,8 +86,12 @@ function currentSlug() {
 	}
 }
 
-// Transform fetched HTML so that only the first two images keep `src`.
-function deferImagesInHtml(html, keep = 2) {
+function isWebmUrl(src) {
+	return /\.webm(?:[?#].*)?$/i.test(String(src || ''));
+}
+
+// Transform fetched HTML so that hover preloads keep heavy media unloaded.
+function deferMediaInHtml(html, keepImages = 2) {
 	try {
 		const parser = new DOMParser();
 		const doc = parser.parseFromString(html, 'text/html');
@@ -95,7 +99,7 @@ function deferImagesInHtml(html, keep = 2) {
 		const imgs = [...doc.querySelectorAll('img')];
 		for (const img of imgs) {
 			if (!img.hasAttribute('src')) continue;
-			if (count < keep) {
+			if (count < keepImages) {
 				count++;
 				continue;
 			}
@@ -104,20 +108,27 @@ function deferImagesInHtml(html, keep = 2) {
 			img.setAttribute('data-src', src);
 			img.removeAttribute('src');
 		}
+		doc.querySelectorAll('video[src]').forEach((video) => {
+			const src = video.getAttribute('src');
+			if (!isWebmUrl(src)) return;
+			video.setAttribute('data-src', src);
+			video.removeAttribute('src');
+		});
 		return doc.body.innerHTML;
 	} catch {
 		return html;
 	}
 }
 
-// When the post is opened, replace data-src back to src to load remaining images.
-function activateDeferredImages(root) {
+// When the post is opened, replace data-src back to src to load deferred media.
+function activateDeferredMedia(root) {
 	try {
-		root.querySelectorAll('img[data-src]').forEach((img) => {
-			const src = img.getAttribute('data-src');
+		root.querySelectorAll('img[data-src], video[data-src]').forEach((media) => {
+			const src = media.getAttribute('data-src');
 			if (src) {
-				img.setAttribute('src', src);
-				img.removeAttribute('data-src');
+				media.setAttribute('src', src);
+				media.removeAttribute('data-src');
+				if (media.tagName === 'VIDEO') media.load();
 			}
 		});
 	} catch {
@@ -188,8 +199,8 @@ export function openPost(id, push, sourceLink, meta) {
 	if (content && cached && content.querySelector('[data-not-loaded]')) {
 		content.innerHTML = cached;
 	}
-	// Ensure remaining images start loading once opened.
-	activateDeferredImages(target);
+	// Ensure remaining media starts loading once opened.
+	activateDeferredMedia(target);
 	applySyntaxHighlight(target);
 }
 
@@ -201,10 +212,12 @@ export function preloadPost(id, meta) {
 	// Load from cache immediately if present
 	const cached = localStorage.getItem(id);
 	if (cached !== null) {
-		if (content.querySelector('[data-not-loaded]')) content.innerHTML = cached;
-		// If this post is currently open or matches the current URL, activate images now
+		const mutated = deferMediaInHtml(cached, 2);
+		if (mutated !== cached) localStorage.setItem(id, mutated);
+		if (content.querySelector('[data-not-loaded]')) content.innerHTML = mutated;
+		// If this post is currently open or matches the current URL, activate media now.
 		const isActiveRoute = currentSlug() === id;
-		if (!target.hidden || isActiveRoute) activateDeferredImages(target);
+		if (!target.hidden || isActiveRoute) activateDeferredMedia(target);
 		applySyntaxHighlight(target);
 		return;
 	}
@@ -226,13 +239,13 @@ export function preloadPost(id, meta) {
 			return r.text();
 		})
 		.then((html) => {
-			// Replace img src with data-src for all but the first two
-			const mutated = deferImagesInHtml(html, 2);
+			// Replace deferred media src with data-src until the post is opened.
+			const mutated = deferMediaInHtml(html, 2);
 			localStorage.setItem(id, mutated);
 			content.innerHTML = mutated;
-			// If the post is currently open or matches current URL, load deferred images
+			// If the post is currently open or matches current URL, load deferred media.
 			const isActiveRoute = currentSlug() === id;
-			if (!target.hidden || isActiveRoute) activateDeferredImages(target);
+			if (!target.hidden || isActiveRoute) activateDeferredMedia(target);
 			applySyntaxHighlight(target);
 		})
 		.catch(() => {
