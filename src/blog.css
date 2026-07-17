@@ -202,6 +202,8 @@ body {
 .post-meta { grid-column: 2; text-align: right; margin: 0; }
 .post-detail .content { grid-column: 1 / -1; margin-top: 12px; text-align: justify; }
 .post-detail .content p { margin: 12px 0; }
+.post-detail .content p.has-attached-figure-below { margin-bottom: 0; }
+.post-detail .content p.has-attached-figure-above { margin-top: 0; }
 
 /* Code styles (generated posts) */
 .post-detail .content pre,
@@ -276,15 +278,20 @@ html[data-theme="dark"] .post-detail .content b { color: #ffffff; }
     .post-detail .content { font-size: 0.95rem; }
 }
 .post-detail .content figure { margin: 24px 0; }
+.post-detail .content figure > a { display: block; }
 .post-detail .content figure > img,
+.post-detail .content figure > a > img,
 .post-detail .content figure > iframe,
 .post-detail .content figure > video { margin: 0 auto; }
 .post-detail .content figure > figcaption {
     text-align: center;
-    margin-top: 6px;
+    margin-top: 4px;
     color: var(--muted);
     font-size: 0.95rem;
 }
+
+.post-detail .content figure.is-attached-above { margin-top: 8px; }
+.post-detail .content figure.is-attached-below { margin-bottom: 8px; }
 
 .post-detail .content blockquote {
     position: relative;

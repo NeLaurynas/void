@@ -108,6 +108,45 @@ async function copyImages(yearDir, distDir) {
 
 // No paragraph-indent post-processing; render Markdown as-is
 
+function attachedFigures(md) {
+	md.core.ruler.before('implicit_figures', 'attached_figures', (state) => {
+		const paragraph = (children, className) => {
+			const open = new state.Token('paragraph_open', 'p', 1);
+			if (className) open.attrSet('class', className);
+			const inline = new state.Token('inline', '', 0);
+			inline.children = children;
+			return [open, inline, new state.Token('paragraph_close', 'p', -1)];
+		};
+
+		for (let i = 1; i < state.tokens.length - 1; i++) {
+			const inline = state.tokens[i];
+			if (inline.type !== 'inline') continue;
+
+			const children = inline.children;
+			const image = children.findIndex((token) => token.type === 'image');
+			if (image === -1) continue;
+
+			const linked = children[image - 1]?.type === 'link_open' && children[image + 1]?.type === 'link_close';
+			const start = linked ? image - 1 : image;
+			const end = linked ? image + 2 : image + 1;
+			const above = children.slice(0, start);
+			const below = children.slice(end);
+			const isBreak = (token) => token && ['softbreak', 'hardbreak'].includes(token.type);
+
+			if ((above.length && !isBreak(above.pop())) || (below.length && !isBreak(below.shift()))) continue;
+			if (!above.length && !below.length) continue;
+
+			const replacement = [];
+			if (above.length) replacement.push(...paragraph(above, 'has-attached-figure-below'));
+			const classes = `${above.length ? 'is-attached-above' : ''} ${below.length ? 'is-attached-below' : ''}`.trim();
+			replacement.push(...paragraph(children.slice(start, end), classes));
+			if (below.length) replacement.push(...paragraph(below, 'has-attached-figure-above'));
+
+			state.tokens.splice(i - 1, 3, ...replacement);
+		}
+	});
+}
+
 async function main() {
 	const root = process.cwd();
 	const postsRoot = path.join(root, 'posts');
@@ -133,6 +172,7 @@ async function main() {
 		const md = new MarkdownIt({html: false, linkify: true, typographer: false});
 		md.linkify.set({fuzzyLink: false});
 		md.use(implicitFigures, {figcaption: true});
+		md.use(attachedFigures);
 		// Ensure links open in a new tab from generated HTML
 		md.renderer.rules.link_open = (tokens, i, options, env, self) => {
 			const token = tokens[i];
