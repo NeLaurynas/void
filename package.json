@@ -14,9 +14,10 @@
 		"build:css": "bun build src/blog.css --minify --outfile=dist/blog.css",
 		"build:html": "bun scripts/copy-html.js",
 		"build:posts": "bun scripts/build-posts.js",
+		"build:sitemap": "bun scripts/build-sitemap.js",
 		"build:assets": "bun scripts/copy-assets.js",
 		"build:clean": "bun run clean && bun run build",
-		"build": "bun run clean && bun run build:js && bun run build:css && bun run build:posts && bun run build:html && bun run build:assets",
+		"build": "bun run clean && bun run build:js && bun run build:css && bun run build:posts && bun run build:sitemap && bun run build:html && bun run build:assets",
 		"dev": "bun scripts/dev.js",
 		"new": "bun scripts/new-post.js",
 		"copyright": "bun scripts/copyright.cjs"

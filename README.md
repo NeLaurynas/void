@@ -116,6 +116,9 @@ Build-time
 - scripts/copy-html.js
   - Copies `src/blog.html` to `dist/blog.html`.
   - If `posts.json` exists, replaces the list view section with the rendered list (links include `data-post` slugs).
+- scripts/build-sitemap.js
+  - Generates `dist/sitemap.xml` from the published posts in `dist/posts.json`.
+  - Uses `https://void.gorgut.eu` as the default origin; set `SITE_URL` to override it.
 - Bundling
   - `bun run build` bundles `src/main.js` into `dist/bundle.js` and minifies `src/blog.css` to `dist/blog.css`.
 

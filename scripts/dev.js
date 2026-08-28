@@ -69,6 +69,8 @@ function contentType(filePath) {
 			return 'text/css; charset=utf-8';
 		case '.txt':
 			return 'text/plain; charset=utf-8';
+		case '.xml':
+			return 'application/xml; charset=utf-8';
 		case '.map':
 			return 'application/json; charset=utf-8';
 		case '.svg':
@@ -113,7 +115,7 @@ function startServer() {
 
 			let reqPath = decodeURIComponent((req.url.split('?')[0] || '/'));
 			const ext = path.extname(reqPath).toLowerCase();
-			const isStatic = ext === '.css' || ext === '.js' || ext === '.avif' || ext === '.webm' || ext === '.html' || ext === '.svg' || ext === '.txt' || ext === '.png' || ext === '.jpg' || ext === '.jpeg' || ext === '.gif';
+			const isStatic = ext === '.css' || ext === '.js' || ext === '.avif' || ext === '.webm' || ext === '.html' || ext === '.svg' || ext === '.txt' || ext === '.xml' || ext === '.png' || ext === '.jpg' || ext === '.jpeg' || ext === '.gif';
 
 			if (isStatic) {
 				const rel = reqPath.startsWith('/') ? reqPath.slice(1) : reqPath;
